@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+// option java_outer_classname = "Data";
+// option java_multiple_files = true;
+option java_package = "com.github.xy02.raas";
+option optimize_for = LITE_RUNTIME;
+
+package raas;
+
+message Data {
+    oneof type{
+        bytes raw = 1;
+        //""==complete, "err message"==error
+        string final = 2;
+    }
+}
