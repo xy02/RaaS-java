@@ -14,17 +14,14 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.Subject;
 
+import java.io.IOException;
+
 public class NatsNode implements RaaSNode {
     private static byte[] finalCompleteMessage = Data.newBuilder().setFinal("").build().toByteArray();
     private Client nc;
 
-    public NatsNode(String address)  {
+    public NatsNode(String address) throws IOException {
         nc = new Client(address);
-    }
-
-    @Override
-    public Completable connect() {
-        return Completable.fromObservable(nc.connect());
     }
 
     @Override
@@ -49,22 +46,36 @@ public class NatsNode implements RaaSNode {
         Disposable subD = nc.subscribeMsg(serviceName)
                 .flatMapCompletable(msg -> {
                     String clientPort = new String(msg.getBody());
+                    System.out.println("clientPort:"+clientPort);
                     String servicePort = Utils.randomID();
-                    msg.setBody(servicePort.getBytes());
-                    Observable<byte[]> inputData = nc.subscribeMsg(servicePort)
+                    Msg replyMsg = new Msg(msg.getReplyTo(),servicePort.getBytes());
+                    Subject<byte[]> inputData = PublishSubject.create();
+                    Disposable d= nc.subscribeMsg(servicePort)
                             .map(Msg::getBody)
                             .map(Data::parseFrom)
-                            .takeWhile(x -> x.getTypeCase().getNumber() == 1)
-                            .map(x -> x.getRaw().toByteArray());
+                            .takeUntil(x -> x.getTypeCase().getNumber() == 2)
+                            .doOnNext(data->{
+                                int type = data.getTypeCase().getNumber();
+                                if(type == 1)
+                                    inputData.onNext(data.getRaw().toByteArray());
+                                if(type == 2) {
+                                    String err = data.getFinal();
+                                    if(err==null || err.isEmpty())
+                                        inputData.onComplete();
+                                    else
+                                        inputData.onError(new Exception(err));
+                                }
+                            })
+                            .doOnDispose(inputData::onComplete)
+                            .subscribe();
                     return service.onCall(new NatsContext(inputData))
+                            .doOnComplete(() -> outputComplete(clientPort))
+                            .doOnError(err -> outputError(clientPort, err))
                             .doFinally(() -> System.out.println("call on final"))
                             .map(x -> Data.newBuilder().setRaw(ByteString.copyFrom(x)).build())
                             .map(x -> new Msg(clientPort, x.toByteArray()))
-                            .doOnComplete(() -> outputComplete(clientPort))
-                            .doOnError(err -> outputError(clientPort, err))
                             .flatMapCompletable(out -> nc.publish(out))
-                            .mergeWith(nc.publish(msg))
-                            .doOnSubscribe(d -> {
+                            .doOnSubscribe(x -> {
                                 info.calledNum++;
                                 serviceInfoSubject.onNext(info);
                             })
@@ -75,7 +86,9 @@ public class NatsNode implements RaaSNode {
                             .doOnError(err -> {
                                 info.errorNum++;
                                 serviceInfoSubject.onNext(info);
-                            });
+                            })
+                            .mergeWith(nc.publish(replyMsg))
+                            .doOnTerminate(d::dispose);
                 }).subscribe(() -> {
                 }, serviceInfoSubject::onError);
         return serviceInfoSubject
