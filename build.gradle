@@ -3,7 +3,6 @@ plugins {
 }
 
 group 'raas'
-version '0.1.1'
 
 sourceCompatibility = 1.8
 
@@ -14,7 +13,10 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
-    implementation 'com.github.xy02:nats-rx:0.2.3'
+    implementation 'com.github.xy02:nats-rx:0.4.1'
     implementation 'io.reactivex.rxjava2:rxjava:2.1.8'
     implementation 'com.google.protobuf:protobuf-lite:3.0.1'
+
+    //for test
+    implementation 'io.nats:jnats:1.0'
 }
