@@ -6,5 +6,5 @@ import io.reactivex.Observable;
 public interface ServiceClient {
     Observable<byte[]> call(String serviceName, Observable<byte[]> outputData);
     Observable<byte[]> subscribe(String subejct);
-    Completable publish(String subejct, byte[] data);
+    void publish(String subejct, byte[] data);
 }

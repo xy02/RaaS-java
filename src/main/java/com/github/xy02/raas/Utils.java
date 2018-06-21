@@ -1,9 +1,12 @@
 package com.github.xy02.raas;
 
-import java.util.UUID;
+import de.huxhorn.sulky.ulid.ULID;
 
-public class Utils{
-    public static String randomID(){
-        return UUID.randomUUID().toString();
-    } 
+public class Utils {
+    private static ULID ulid = new ULID();
+
+    public static String randomID() {
+//        return UUID.randomUUID().toString();
+        return ulid.nextULID();
+    }
 }
