@@ -1,16 +1,11 @@
 package com.github.xy02.raas.nats;
 
 import com.github.xy02.nats.Connection;
+import com.github.xy02.nats.IConnection;
 import com.github.xy02.nats.MSG;
-import com.github.xy02.nats.Options;
-import com.github.xy02.raas.DataOuterClass.Data;
-import com.github.xy02.raas.RaaSNode;
-import com.github.xy02.raas.Service;
-import com.github.xy02.raas.ServiceInfo;
-import com.github.xy02.raas.Utils;
+import com.github.xy02.raas.*;
 import com.google.protobuf.ByteString;
 import io.reactivex.Observable;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.Subject;
 
@@ -18,74 +13,81 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 public class NatsNode implements RaaSNode {
-    private static byte[] finalCompleteMessage = Data.newBuilder().setFinal("").build().toByteArray();
+    private static byte[] finalCompleteMessage = DataOuterClass.Data.newBuilder().setFinal("").build().toByteArray();
 
-    private Connection nc;
-    private Connection ncPub;
+    //service connection
+    private IConnection serviceConn;
+    //client connection
+    private IConnection clientConn;
 
-    public NatsNode(Options options) throws IOException {
-        nc = new Connection(options);
-        ncPub = new Connection(options);
+    public NatsNode(RaaSOptions options) throws IOException {
+        serviceConn = new Connection(options.getNatsOptions());
+        if (options.isSingleSocket())
+            clientConn = serviceConn;
+        else
+            clientConn = new Connection(options.getNatsOptions());
+    }
+
+    public NatsNode() throws IOException {
+        this(new RaaSOptions());
     }
 
     @Override
     public Observable<ServiceInfo> register(String serviceName, Service service) {
         Subject<ServiceInfo> serviceInfoSubject = PublishSubject.create();
         ServiceInfo info = new ServiceInfo();
-        return serviceInfoSubject.mergeWith(nc
-                        .subscribeMsg(serviceName, "service")
-                        .flatMap(handshakeMsg -> onServiceConnected(service, handshakeMsg)
-                                        .doOnSubscribe(x -> {
-                                            info.calledNum++;
-                                            serviceInfoSubject.onNext(info);
-                                        })
-                                        .doOnComplete(() -> {
-                                            info.completedNum++;
-                                            serviceInfoSubject.onNext(info);
-                                        })
-                                        .doOnError(err -> {
-                                            info.errorNum++;
-                                            serviceInfoSubject.onNext(info);
-                                        })
-                                        .ofType(ServiceInfo.class)
-//                        .onErrorResumeNext(Observable.empty())
-                        )
-
-        );
+        return serviceConn
+                .subscribeMsg(serviceName, "service")
+                .flatMap(handshakeMsg -> onServiceConnected(service, handshakeMsg)
+                        .doOnSubscribe(x -> {
+                            info.calledNum++;
+                            serviceInfoSubject.onNext(info);
+                        })
+                        .doOnComplete(() -> {
+                            info.completedNum++;
+                            serviceInfoSubject.onNext(info);
+                        })
+                        .doOnError(err -> {
+                            info.errorNum++;
+                            serviceInfoSubject.onNext(info);
+                        })
+                        .ofType(ServiceInfo.class)
+                ).mergeWith(serviceInfoSubject);
     }
 
     @Override
     public Observable<byte[]> call(String serviceName, Observable<byte[]> outputData) {
         String clientPort = Utils.randomID();
-        return observeInputData(clientPort)
-                .mergeWith(nc.request(serviceName, clientPort.getBytes(), 5, TimeUnit.SECONDS)
-                        .map(msg -> new String(msg.getBody()))
-                        .doOnSuccess(servicePort -> System.out.println("servicePort:" + servicePort))
-                        .flatMapObservable(servicePort -> outputData
-                                .doOnNext(body -> outputNext(servicePort, body))
-                                .doOnComplete(() -> outputComplete(servicePort))
-                                .doOnError(err -> outputError(servicePort, err))
-                                .doOnDispose(() -> outputError(servicePort, new Exception("dispose")))
-                        )
-                        .filter(x -> false)
-                );
+        IConnection conn = clientConn;
+        Observable<byte[]> out = conn.request(serviceName, clientPort.getBytes(), 5, TimeUnit.SECONDS)
+                .map(msg -> new String(msg.getBody()))
+                .doOnSuccess(servicePort -> System.out.println("servicePort:" + servicePort))
+                .flatMapObservable(servicePort -> outputData
+                        .doOnNext(body -> outputNext(conn, servicePort, body))
+                        .doOnComplete(() -> outputComplete(conn, servicePort))
+                        .doOnError(err -> outputError(conn, servicePort, err))
+                        .doOnDispose(() -> outputError(conn, servicePort, new Exception("dispose")))
+                )
+                .filter(x -> false);
+        return observeInputData(conn, clientPort)
+                .mergeWith(out);
     }
 
     @Override
-    public Observable<byte[]> subscribe(String subejct) {
-        return nc.subscribeMsg(subejct).map(MSG::getBody);
+    public Observable<byte[]> subscribe(String subject) {
+        return clientConn.subscribeMsg(subject)
+                .map(MSG::getBody);
     }
 
     @Override
-    public void publish(String subejct, byte[] data) {
-        ncPub.publish(new MSG(subejct, data));
+    public void publish(String subject, byte[] data) throws IOException {
+        clientConn.publish(new MSG(subject, data));
     }
 
-    private Observable<byte[]> observeInputData(String port) {
-        return nc.subscribeMsg(port)
+    private Observable<byte[]> observeInputData(IConnection conn, String port) {
+        return conn.subscribeMsg(port)
                 .map(MSG::getBody)
-                .map(Data::parseFrom)
-                .takeUntil(x -> x.getTypeCase().getNumber() == 2)
+                .map(DataOuterClass.Data::parseFrom)
                 .doOnNext(data -> {
                     if (data.getTypeCase().getNumber() == 2) {
                         String err = data.getFinal();
@@ -93,46 +95,49 @@ public class NatsNode implements RaaSNode {
                             throw new Exception(err);
                     }
                 })
-                .filter(data -> data.getTypeCase().getNumber() == 1)
+                .takeWhile(x -> x.getTypeCase().getNumber() == 1)
                 .map(data -> data.getRaw().toByteArray())
                 ;
     }
 
     //temporarily emit output data
     private Observable<byte[]> onServiceConnected(Service service, MSG handshakeMsg) {
+        IConnection conn = serviceConn;
         String clientPort = new String(handshakeMsg.getBody());
         System.out.println("clientPort:" + clientPort);
         String servicePort = Utils.randomID();
         MSG replyMsg = new MSG(handshakeMsg.getReplyTo(), servicePort.getBytes());
-        Subject<byte[]> inputData = PublishSubject.create();
-        Disposable d = observeInputData(servicePort)
-                .doOnNext(inputData::onNext)
-                .doOnComplete(inputData::onComplete)
-                .doOnError(inputData::onError)
-                .doOnDispose(inputData::onComplete)
-                .subscribe();
-        return service.onCall(new NatsContext(inputData, this))
-                .doOnNext(raw -> outputNext(clientPort, raw))
-                .doOnComplete(() -> outputComplete(clientPort))
-                .doOnError(err -> outputError(clientPort, err))
-                .doOnSubscribe(x -> ncPub.publish(replyMsg))
+        Subject<byte[]> inputSubject = PublishSubject.create();
+        Observable<byte[]> inputData = observeInputData(conn, servicePort)
+                .doOnNext(inputSubject::onNext)
+                .doOnComplete(inputSubject::onComplete)
+                .doOnError(inputSubject::onError)
+                .doOnDispose(inputSubject::onComplete)
+                .mergeWith(Observable.create(emitter -> {
+                    conn.publish(replyMsg);
+                    emitter.onComplete();
+                }));
+        return service.onCall(new NatsContext(inputSubject, this))
+                .doOnNext(raw -> outputNext(conn, clientPort, raw))
+                .doOnComplete(() -> outputComplete(conn, clientPort))
+                .doOnError(err -> outputError(conn, clientPort, err))
+                .mergeWith(inputData)
                 .doFinally(() -> System.out.println("call on final"))
-                .doFinally(d::dispose)
                 ;
     }
 
-    private void outputNext(String port, byte[] raw) {
-        Data data = Data.newBuilder().setRaw(ByteString.copyFrom(raw)).build();
-        ncPub.publish(new MSG(port, data.toByteArray()));
+    private void outputNext(IConnection conn, String port, byte[] raw) throws IOException {
+        DataOuterClass.Data data = DataOuterClass.Data.newBuilder().setRaw(ByteString.copyFrom(raw)).build();
+        conn.publish(new MSG(port, data.toByteArray()));
     }
 
-    private void outputComplete(String port) {
-        ncPub.publish(new MSG(port, finalCompleteMessage));
+    private void outputComplete(IConnection conn, String port) throws IOException {
+        conn.publish(new MSG(port, finalCompleteMessage));
     }
 
-    private void outputError(String port, Throwable t) {
-        byte[] body = Data.newBuilder().setFinal(t.getMessage()).build().toByteArray();
-        ncPub.publish(new MSG(port, body));
+    private void outputError(IConnection conn, String port, Throwable t) throws IOException {
+        byte[] body = DataOuterClass.Data.newBuilder().setFinal(t.getMessage()).build().toByteArray();
+        conn.publish(new MSG(port, body));
     }
 
 }
