@@ -47,8 +47,8 @@ public class Test {
             //call service
 //            NatsNode node2 = new NatsNode(new Options());
             byte[] buf = "hello".getBytes();
-            node.call("test.s2",
-                    Observable.interval(0, 2, TimeUnit.MICROSECONDS)
+            node.call("test.s1",
+                    Observable.interval(0, 20, TimeUnit.MICROSECONDS)
                             .doOnSubscribe(d -> System.out.println("doOnSubscribe"))
                             .map(x -> buf)
             )

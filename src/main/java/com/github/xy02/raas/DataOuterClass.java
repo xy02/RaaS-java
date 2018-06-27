@@ -24,7 +24,7 @@ public final class DataOuterClass {
      *
      * <code>optional string final = 2;</code>
      */
-    String getFinal();
+    java.lang.String getFinal();
     /**
      * <pre>
      *""==complete, "err message"==error
@@ -35,7 +35,17 @@ public final class DataOuterClass {
     com.google.protobuf.ByteString
         getFinalBytes();
 
-    public Data.TypeCase getTypeCase();
+    /**
+     * <code>optional bool ping = 3;</code>
+     */
+    boolean getPing();
+
+    /**
+     * <code>optional bool pong = 4;</code>
+     */
+    boolean getPong();
+
+    public com.github.xy02.raas.DataOuterClass.Data.TypeCase getTypeCase();
   }
   /**
    * Protobuf type {@code raas.Data}
@@ -48,11 +58,13 @@ public final class DataOuterClass {
     private Data() {
     }
     private int typeCase_ = 0;
-    private Object type_;
+    private java.lang.Object type_;
     public enum TypeCase
         implements com.google.protobuf.Internal.EnumLite {
       RAW(1),
       FINAL(2),
+      PING(3),
+      PONG(4),
       TYPE_NOT_SET(0);
       private final int value;
       private TypeCase(int value) {
@@ -61,7 +73,7 @@ public final class DataOuterClass {
       /**
        * @deprecated Use {@link #forNumber(int)} instead.
        */
-      @Deprecated
+      @java.lang.Deprecated
       public static TypeCase valueOf(int value) {
         return forNumber(value);
       }
@@ -70,6 +82,8 @@ public final class DataOuterClass {
         switch (value) {
           case 1: return RAW;
           case 2: return FINAL;
+          case 3: return PING;
+          case 4: return PONG;
           case 0: return TYPE_NOT_SET;
           default: return null;
         }
@@ -128,10 +142,10 @@ public final class DataOuterClass {
      *
      * <code>optional string final = 2;</code>
      */
-    public String getFinal() {
-      String ref = "";
+    public java.lang.String getFinal() {
+      java.lang.String ref = "";
       if (typeCase_ == 2) {
-        ref = (String) type_;
+        ref = (java.lang.String) type_;
       }
       return ref;
     }
@@ -144,9 +158,9 @@ public final class DataOuterClass {
      */
     public com.google.protobuf.ByteString
         getFinalBytes() {
-      String ref = "";
+      java.lang.String ref = "";
       if (typeCase_ == 2) {
-        ref = (String) type_;
+        ref = (java.lang.String) type_;
       }
       return com.google.protobuf.ByteString.copyFromUtf8(ref);
     }
@@ -158,7 +172,7 @@ public final class DataOuterClass {
      * <code>optional string final = 2;</code>
      */
     private void setFinal(
-        String value) {
+        java.lang.String value) {
       if (value == null) {
     throw new NullPointerException();
   }
@@ -195,6 +209,60 @@ public final class DataOuterClass {
       type_ = value.toStringUtf8();
     }
 
+    public static final int PING_FIELD_NUMBER = 3;
+    /**
+     * <code>optional bool ping = 3;</code>
+     */
+    public boolean getPing() {
+      if (typeCase_ == 3) {
+        return (java.lang.Boolean) type_;
+      }
+      return false;
+    }
+    /**
+     * <code>optional bool ping = 3;</code>
+     */
+    private void setPing(boolean value) {
+      typeCase_ = 3;
+      type_ = value;
+    }
+    /**
+     * <code>optional bool ping = 3;</code>
+     */
+    private void clearPing() {
+      if (typeCase_ == 3) {
+        typeCase_ = 0;
+        type_ = null;
+      }
+    }
+
+    public static final int PONG_FIELD_NUMBER = 4;
+    /**
+     * <code>optional bool pong = 4;</code>
+     */
+    public boolean getPong() {
+      if (typeCase_ == 4) {
+        return (java.lang.Boolean) type_;
+      }
+      return false;
+    }
+    /**
+     * <code>optional bool pong = 4;</code>
+     */
+    private void setPong(boolean value) {
+      typeCase_ = 4;
+      type_ = value;
+    }
+    /**
+     * <code>optional bool pong = 4;</code>
+     */
+    private void clearPong() {
+      if (typeCase_ == 4) {
+        typeCase_ = 0;
+        type_ = null;
+      }
+    }
+
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (typeCase_ == 1) {
@@ -203,6 +271,14 @@ public final class DataOuterClass {
       }
       if (typeCase_ == 2) {
         output.writeString(2, getFinal());
+      }
+      if (typeCase_ == 3) {
+        output.writeBool(
+            3, (boolean)((java.lang.Boolean) type_));
+      }
+      if (typeCase_ == 4) {
+        output.writeBool(
+            4, (boolean)((java.lang.Boolean) type_));
       }
     }
 
@@ -220,64 +296,74 @@ public final class DataOuterClass {
         size += com.google.protobuf.CodedOutputStream
           .computeStringSize(2, getFinal());
       }
+      if (typeCase_ == 3) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(
+              3, (boolean)((java.lang.Boolean) type_));
+      }
+      if (typeCase_ == 4) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(
+              4, (boolean)((java.lang.Boolean) type_));
+      }
       memoizedSerializedSize = size;
       return size;
     }
 
-    public static Data parseFrom(
+    public static com.github.xy02.raas.DataOuterClass.Data parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return com.google.protobuf.GeneratedMessageLite.parseFrom(
           DEFAULT_INSTANCE, data);
     }
-    public static Data parseFrom(
+    public static com.github.xy02.raas.DataOuterClass.Data parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return com.google.protobuf.GeneratedMessageLite.parseFrom(
           DEFAULT_INSTANCE, data, extensionRegistry);
     }
-    public static Data parseFrom(byte[] data)
+    public static com.github.xy02.raas.DataOuterClass.Data parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return com.google.protobuf.GeneratedMessageLite.parseFrom(
           DEFAULT_INSTANCE, data);
     }
-    public static Data parseFrom(
+    public static com.github.xy02.raas.DataOuterClass.Data parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return com.google.protobuf.GeneratedMessageLite.parseFrom(
           DEFAULT_INSTANCE, data, extensionRegistry);
     }
-    public static Data parseFrom(java.io.InputStream input)
+    public static com.github.xy02.raas.DataOuterClass.Data parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageLite.parseFrom(
           DEFAULT_INSTANCE, input);
     }
-    public static Data parseFrom(
+    public static com.github.xy02.raas.DataOuterClass.Data parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageLite.parseFrom(
           DEFAULT_INSTANCE, input, extensionRegistry);
     }
-    public static Data parseDelimitedFrom(java.io.InputStream input)
+    public static com.github.xy02.raas.DataOuterClass.Data parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return parseDelimitedFrom(DEFAULT_INSTANCE, input);
     }
-    public static Data parseDelimitedFrom(
+    public static com.github.xy02.raas.DataOuterClass.Data parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return parseDelimitedFrom(DEFAULT_INSTANCE, input, extensionRegistry);
     }
-    public static Data parseFrom(
+    public static com.github.xy02.raas.DataOuterClass.Data parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageLite.parseFrom(
           DEFAULT_INSTANCE, input);
     }
-    public static Data parseFrom(
+    public static com.github.xy02.raas.DataOuterClass.Data parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -288,7 +374,7 @@ public final class DataOuterClass {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(Data prototype) {
+    public static Builder newBuilder(com.github.xy02.raas.DataOuterClass.Data prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
 
@@ -297,9 +383,9 @@ public final class DataOuterClass {
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageLite.Builder<
-          Data, Builder> implements
+          com.github.xy02.raas.DataOuterClass.Data, Builder> implements
         // @@protoc_insertion_point(builder_implements:raas.Data)
-        DataOrBuilder {
+        com.github.xy02.raas.DataOuterClass.DataOrBuilder {
       // Construct using com.github.xy02.raas.DataOuterClass.Data.newBuilder()
       private Builder() {
         super(DEFAULT_INSTANCE);
@@ -347,7 +433,7 @@ public final class DataOuterClass {
        *
        * <code>optional string final = 2;</code>
        */
-      public String getFinal() {
+      public java.lang.String getFinal() {
         return instance.getFinal();
       }
       /**
@@ -369,7 +455,7 @@ public final class DataOuterClass {
        * <code>optional string final = 2;</code>
        */
       public Builder setFinal(
-          String value) {
+          java.lang.String value) {
         copyOnWrite();
         instance.setFinal(value);
         return this;
@@ -400,14 +486,60 @@ public final class DataOuterClass {
         return this;
       }
 
+      /**
+       * <code>optional bool ping = 3;</code>
+       */
+      public boolean getPing() {
+        return instance.getPing();
+      }
+      /**
+       * <code>optional bool ping = 3;</code>
+       */
+      public Builder setPing(boolean value) {
+        copyOnWrite();
+        instance.setPing(value);
+        return this;
+      }
+      /**
+       * <code>optional bool ping = 3;</code>
+       */
+      public Builder clearPing() {
+        copyOnWrite();
+        instance.clearPing();
+        return this;
+      }
+
+      /**
+       * <code>optional bool pong = 4;</code>
+       */
+      public boolean getPong() {
+        return instance.getPong();
+      }
+      /**
+       * <code>optional bool pong = 4;</code>
+       */
+      public Builder setPong(boolean value) {
+        copyOnWrite();
+        instance.setPong(value);
+        return this;
+      }
+      /**
+       * <code>optional bool pong = 4;</code>
+       */
+      public Builder clearPong() {
+        copyOnWrite();
+        instance.clearPong();
+        return this;
+      }
+
       // @@protoc_insertion_point(builder_scope:raas.Data)
     }
     protected final Object dynamicMethod(
-        MethodToInvoke method,
+        com.google.protobuf.GeneratedMessageLite.MethodToInvoke method,
         Object arg0, Object arg1) {
       switch (method) {
         case NEW_MUTABLE_INSTANCE: {
-          return new Data();
+          return new com.github.xy02.raas.DataOuterClass.Data();
         }
         case IS_INITIALIZED: {
           return DEFAULT_INSTANCE;
@@ -420,7 +552,7 @@ public final class DataOuterClass {
         }
         case VISIT: {
           Visitor visitor = (Visitor) arg0;
-          Data other = (Data) arg1;
+          com.github.xy02.raas.DataOuterClass.Data other = (com.github.xy02.raas.DataOuterClass.Data) arg1;
           switch (other.getTypeCase()) {
             case RAW: {
               type_ = visitor.visitOneofByteString(
@@ -432,12 +564,22 @@ public final class DataOuterClass {
                  typeCase_ == 2, type_, other.type_);
               break;
             }
+            case PING: {
+              type_ = visitor.visitOneofBoolean(
+                  typeCase_ == 3, type_, other.type_);
+              break;
+            }
+            case PONG: {
+              type_ = visitor.visitOneofBoolean(
+                  typeCase_ == 4, type_, other.type_);
+              break;
+            }
             case TYPE_NOT_SET: {
               visitor.visitOneofNotSet(typeCase_ != 0);
               break;
             }
           }
-          if (visitor == MergeFromVisitor
+          if (visitor == com.google.protobuf.GeneratedMessageLite.MergeFromVisitor
               .INSTANCE) {
             if (other.typeCase_ != 0) {
               typeCase_ = other.typeCase_;
@@ -475,6 +617,16 @@ public final class DataOuterClass {
                   type_ = s;
                   break;
                 }
+                case 24: {
+                  typeCase_ = 3;
+                  type_ = input.readBool();
+                  break;
+                }
+                case 32: {
+                  typeCase_ = 4;
+                  type_ = input.readBool();
+                  break;
+                }
               }
             }
           } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -490,7 +642,7 @@ public final class DataOuterClass {
           return DEFAULT_INSTANCE;
         }
         case GET_PARSER: {
-          if (PARSER == null) {    synchronized (Data.class) {
+          if (PARSER == null) {    synchronized (com.github.xy02.raas.DataOuterClass.Data.class) {
               if (PARSER == null) {
                 PARSER = new DefaultInstanceBasedParser(DEFAULT_INSTANCE);
               }
@@ -504,13 +656,13 @@ public final class DataOuterClass {
 
 
     // @@protoc_insertion_point(class_scope:raas.Data)
-    private static final Data DEFAULT_INSTANCE;
+    private static final com.github.xy02.raas.DataOuterClass.Data DEFAULT_INSTANCE;
     static {
       DEFAULT_INSTANCE = new Data();
       DEFAULT_INSTANCE.makeImmutable();
     }
 
-    public static Data getDefaultInstance() {
+    public static com.github.xy02.raas.DataOuterClass.Data getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 

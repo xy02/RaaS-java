@@ -12,5 +12,7 @@ message Data {
         bytes raw = 1;
         //""==complete, "err message"==error
         string final = 2;
+        bool ping = 3;
+        bool pong = 4;
     }
 }

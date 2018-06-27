@@ -6,6 +6,7 @@ import com.github.xy02.nats.MSG;
 import com.github.xy02.raas.*;
 import com.google.protobuf.ByteString;
 import io.reactivex.Observable;
+import io.reactivex.Observer;
 import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.Subject;
 
@@ -14,6 +15,8 @@ import java.util.concurrent.TimeUnit;
 
 public class NatsNode implements RaaSNode {
     private static byte[] finalCompleteMessage = DataOuterClass.Data.newBuilder().setFinal("").build().toByteArray();
+    private static byte[] pingMessage = DataOuterClass.Data.newBuilder().setPing(true).build().toByteArray();
+    private static byte[] pongMessage = DataOuterClass.Data.newBuilder().setPong(true).build().toByteArray();
 
     //service connection
     private IConnection serviceConn;
@@ -59,8 +62,10 @@ public class NatsNode implements RaaSNode {
     public Observable<byte[]> call(String serviceName, Observable<byte[]> outputData) {
         String clientPort = Utils.randomID();
         IConnection conn = clientConn;
+        Subject<Boolean> onPingSubject = PublishSubject.create();
         Observable<byte[]> out = conn.request(serviceName, clientPort.getBytes(), 5, TimeUnit.SECONDS)
                 .map(msg -> new String(msg.getBody()))
+                .doOnSuccess(servicePort -> doOnPing(onPingSubject, conn, servicePort))
                 .doOnSuccess(servicePort -> System.out.println("servicePort:" + servicePort))
                 .flatMapObservable(servicePort -> outputData
                         .doOnNext(body -> outputNext(conn, servicePort, body))
@@ -69,8 +74,17 @@ public class NatsNode implements RaaSNode {
                         .doOnDispose(() -> outputError(conn, servicePort, new Exception("dispose")))
                 )
                 .filter(x -> false);
-        return observeInputData(conn, clientPort)
-                .mergeWith(out);
+        return observeInputData(conn, clientPort, onPingSubject)
+                .timeout(2,TimeUnit.MINUTES)
+                .mergeWith(out)
+                .doFinally(onPingSubject::onComplete);
+    }
+
+    private void doOnPing(Observable<Boolean> onPingSubject, IConnection conn, String servicePort) {
+        onPingSubject
+                .doOnNext(x ->System.out.println("onPing"))
+                .doOnNext(x -> conn.publish(new MSG(servicePort, pongMessage)))
+                .subscribe();
     }
 
     @Override
@@ -84,19 +98,38 @@ public class NatsNode implements RaaSNode {
         clientConn.publish(new MSG(subject, data));
     }
 
-    private Observable<byte[]> observeInputData(IConnection conn, String port) {
+    private Observable<byte[]> observeInputData(IConnection conn, String port, Observer<Boolean> pingPongSubject) {
         return conn.subscribeMsg(port)
                 .map(MSG::getBody)
                 .map(DataOuterClass.Data::parseFrom)
-                .doOnNext(data -> {
-                    if (data.getTypeCase().getNumber() == 2) {
-                        String err = data.getFinal();
-                        if (err != null && !err.isEmpty())
-                            throw new Exception(err);
+                .takeUntil(data -> data.getTypeCase().getNumber() == 2)
+                .flatMap(data -> Observable.create(emitter -> {
+                    switch (data.getTypeCase().getNumber()) {
+                        case 1:
+                            emitter.onNext(data.getRaw().toByteArray());
+                            break;
+                        case 2:
+                            String err = data.getFinal();
+                            if (err != null && !err.isEmpty())
+                                throw new Exception(err);
+                        case 3:
+                            pingPongSubject.onNext(true);
+                            break;
+                        case 4:
+                            pingPongSubject.onNext(false);
+                            break;
                     }
-                })
-                .takeWhile(x -> x.getTypeCase().getNumber() == 1)
-                .map(data -> data.getRaw().toByteArray())
+                    emitter.onComplete();
+                }))
+//                .doOnNext(data -> {
+//                    if (data.getTypeCase().getNumber() == 2) {
+//                        String err = data.getFinal();
+//                        if (err != null && !err.isEmpty())
+//                            throw new Exception(err);
+//                    }
+//                })
+//                .takeWhile(x -> x.getTypeCase().getNumber() == 1)
+//                .map(data -> data.getRaw().toByteArray())
                 ;
     }
 
@@ -108,7 +141,9 @@ public class NatsNode implements RaaSNode {
         String servicePort = Utils.randomID();
         MSG replyMsg = new MSG(handshakeMsg.getReplyTo(), servicePort.getBytes());
         Subject<byte[]> inputSubject = PublishSubject.create();
-        Observable<byte[]> inputData = observeInputData(conn, servicePort)
+        Subject<Boolean> onPongSubject = PublishSubject.create();
+        Observable<byte[]> inputData = observeInputData(conn, servicePort, onPongSubject)
+                .timeout(2,TimeUnit.MINUTES)
                 .doOnNext(inputSubject::onNext)
                 .doOnComplete(inputSubject::onComplete)
                 .doOnError(inputSubject::onError)
@@ -122,8 +157,26 @@ public class NatsNode implements RaaSNode {
                 .doOnComplete(() -> outputComplete(conn, clientPort))
                 .doOnError(err -> outputError(conn, clientPort, err))
                 .mergeWith(inputData)
+                .mergeWith(intervalPing(conn, clientPort, onPongSubject))
+                .doFinally(onPongSubject::onComplete)
+                .doFinally(inputSubject::onComplete)
                 .doFinally(() -> System.out.println("call on final"))
                 ;
+    }
+
+    private Observable<byte[]> intervalPing(IConnection conn, String clientPort, Observable<Boolean> onPongSubject) {
+        Observable<Long> ping = Observable.interval(0, 1, TimeUnit.MILLISECONDS)
+                .takeUntil(onPongSubject
+                        .doOnNext(x ->System.out.println("onPong"))
+                )
+                .mergeWith(Observable.timer(0, TimeUnit.MILLISECONDS)
+                        .doOnNext(x -> conn.publish(new MSG(clientPort, pingMessage)))
+                )
+                .takeLast(1)
+                .timeout(5, TimeUnit.SECONDS);
+        return Observable.interval(1, TimeUnit.MINUTES)
+                .flatMap(x -> ping)
+                .ofType(byte[].class);
     }
 
     private void outputNext(IConnection conn, String port, byte[] raw) throws IOException {
