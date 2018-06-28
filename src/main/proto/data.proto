@@ -9,10 +9,11 @@ package raas;
 
 message Data {
     oneof type{
+        //raw binary data
         bytes raw = 1;
-        //""==complete, "err message"==error
+        //""(empty string) means complete, "err message"(not empty) means error
         string final = 2;
-        bool ping = 3;
-        bool pong = 4;
+        //true means ping, false means pong
+        bool ping_pong = 3;
     }
 }
