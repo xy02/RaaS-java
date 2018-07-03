@@ -15,16 +15,20 @@ public class TestNatsSend {
             byte[] data = "hello".getBytes();
             Connection nc = Nats.connect();
 
-            Observable.create(emitter -> {
-                Connection nc2 = Nats.connect();
-                nc2.subscribe("test", msg -> {
-                    System.out.println(msg.getReplyTo());
-                    read++;
-                });
+//            Observable.create(emitter -> {
+//                Connection nc2 = Nats.connect();
+//                nc2.subscribe("test", msg -> {
+//                    System.out.println(msg.getReplyTo());
+//                    read++;
+//                });
+//            }).subscribeOn(Schedulers.io()).subscribe();
+//
+//            nc.request("test",data);
+            Observable.create(emitter1 -> {
+                while (true) {
+                    nc.request("test",data,1000);
+                }
             }).subscribeOn(Schedulers.io()).subscribe();
-
-            nc.request("test",data);
-
 
 //            Observable.create(emitter1 -> {
 //                System.out.printf("publish on 1 :%s\n", Thread.currentThread().getName());

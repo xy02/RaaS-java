@@ -1,8 +1,7 @@
 import com.github.xy02.raas.RaaSNode;
 import com.github.xy02.raas.nats.NatsNode;
 import io.reactivex.Observable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.Single;
 
 import java.util.concurrent.TimeUnit;
 
@@ -12,32 +11,51 @@ public class Test {
     public static void main(String[] args) {
         try {
             RaaSNode node = new NatsNode();
-            //register service
-            node.register("test.s1", ctx -> ctx.getInputData()
-//                            Observable.interval(0, 1, TimeUnit.NANOSECONDS)
-//                                    .map(x -> ("1" + x).getBytes())
-//                            .doOnNext(x -> read++)
-//                            .flatMap(x -> Observable.never())
-                            .map(x -> new String(x))
-//                            .doOnNext(System.out::println)
-                            .map(x -> x + " OK")
+            //registerService service
+            node.registerService("test.s1", ctx -> ctx.getInputData()
+//                            .doOnNext(x -> System.out.println(new String(x)))
+                            .map(x -> new String(x) + " OK")
                             .map(String::getBytes)
             )
-                    .doOnNext(x->System.out.printf("onCall: %d, onError: %d, onComplete: %d\n",x.calledNum,x.errorNum,x.completedNum))
+                    .doOnNext(x -> System.out.printf("onCall: %d, onError: %d, onComplete: %d\n", x.calledNum, x.errorNum, x.completedNum))
                     .subscribe();
 
-            //register service
-            node.register("test.s2", ctx ->
-                            node.call("test.s1", ctx.getInputData())
-                                    .map(x -> new String(x))
-//                            .doOnNext(System.out::println)
-                                    .map(x -> x + " on s2")
-                                    .map(String::getBytes)
+            //registerService service
+            node.registerService("test.s2", ctx ->ctx.getInputData()
+                    .flatMap(x-> node.call("test.s4", Observable.just(x)))
+//                            .map(String::getBytes)
+//                            .doOnNext(x -> System.out.println(new String(x)))
+//                                    .map(x -> new String(x) + " on s2")
+
             )
                     .subscribe();
 
+            //registerService service
+            node.registerService("test.s3", ctx -> ctx.getInputData()
+//                    .doOnNext(x -> System.out.println(Thread.currentThread().getName()))
+                    .flatMapSingle(x -> ctx.unaryCall("test.s1", x, 1, TimeUnit.SECONDS))
+//                    .doOnNext(x -> System.out.println(Thread.currentThread().getName()))
+            )
+                    .subscribe();
 
+            //registerService service
+            node.registerService("test.s4", ctx ->ctx.getInputData()
+                            .take(1)
+//                    .doOnComplete(()->System.out.println("complete"))
+//                            .doOnNext(x -> System.out.println(new String(x)))
+                    .map(x -> new String(x) + " on s4")
+                    .map(String::getBytes)
+            )
+                    .subscribe();
 
+            //registerService unary service
+            node.registerUnaryService("test.s1", ctx -> Single.<String>create(emitter -> {
+                        emitter.onSuccess(new String(ctx.getInputData()) + " OK2");
+//                        emitter.tryOnError(new Exception("e..."));
+                    })
+                            .map(String::getBytes)
+            )
+                    .subscribe();
 
             //forever
             Thread.sleep(Long.MAX_VALUE);

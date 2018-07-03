@@ -3,22 +3,29 @@ package com.github.xy02.raas.nats;
 import com.github.xy02.raas.RaaSNode;
 import com.github.xy02.raas.ServiceContext;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
-public class NatsContext implements ServiceContext {
+public class NatsContext<T> implements ServiceContext<T> {
 
-    private Observable<byte[]> inputData;
+    private T inputData;
     private RaaSNode node;
 
-    public NatsContext(Observable<byte[]> inputData, RaaSNode node) {
+    public NatsContext(T inputData, RaaSNode node) {
         this.inputData = inputData;
         this.node = node;
     }
 
     @Override
-    public Observable<byte[]> getInputData() {
+    public T getInputData() {
         return inputData;
+    }
+
+    @Override
+    public Single<byte[]> unaryCall(String serviceName, byte[] outputData, long timeout, TimeUnit timeUnit) {
+        return node.unaryCall(serviceName, outputData, timeout, timeUnit);
     }
 
     @Override

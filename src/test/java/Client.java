@@ -17,7 +17,7 @@ public class Client {
             RaaSNode node = new NatsNode();
             byte[] buf = "hello".getBytes();
             Disposable d2 = node.call("test.s1",
-                    Observable.interval(0, 20, TimeUnit.MICROSECONDS)
+                    Observable.interval(0, 2, TimeUnit.MICROSECONDS)
                             .doOnSubscribe(d -> System.out.println("doOnSubscribe"))
                             .map(x -> buf)
             )

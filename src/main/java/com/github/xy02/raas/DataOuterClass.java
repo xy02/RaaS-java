@@ -48,6 +48,24 @@ public final class DataOuterClass {
      */
     boolean getPingPong();
 
+    /**
+     * <pre>
+     *reply token of request pattern (instead of the reply string of NATS)
+     * </pre>
+     *
+     * <code>optional string reply = 4;</code>
+     */
+    String getReply();
+    /**
+     * <pre>
+     *reply token of request pattern (instead of the reply string of NATS)
+     * </pre>
+     *
+     * <code>optional string reply = 4;</code>
+     */
+    com.google.protobuf.ByteString
+        getReplyBytes();
+
     public Data.TypeCase getTypeCase();
   }
   /**
@@ -59,6 +77,7 @@ public final class DataOuterClass {
       // @@protoc_insertion_point(message_implements:raas.Data)
       DataOrBuilder {
     private Data() {
+      reply_ = "";
     }
     private int typeCase_ = 0;
     private Object type_;
@@ -261,6 +280,72 @@ public final class DataOuterClass {
       }
     }
 
+    public static final int REPLY_FIELD_NUMBER = 4;
+    private String reply_;
+    /**
+     * <pre>
+     *reply token of request pattern (instead of the reply string of NATS)
+     * </pre>
+     *
+     * <code>optional string reply = 4;</code>
+     */
+    public String getReply() {
+      return reply_;
+    }
+    /**
+     * <pre>
+     *reply token of request pattern (instead of the reply string of NATS)
+     * </pre>
+     *
+     * <code>optional string reply = 4;</code>
+     */
+    public com.google.protobuf.ByteString
+        getReplyBytes() {
+      return com.google.protobuf.ByteString.copyFromUtf8(reply_);
+    }
+    /**
+     * <pre>
+     *reply token of request pattern (instead of the reply string of NATS)
+     * </pre>
+     *
+     * <code>optional string reply = 4;</code>
+     */
+    private void setReply(
+        String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
+      reply_ = value;
+    }
+    /**
+     * <pre>
+     *reply token of request pattern (instead of the reply string of NATS)
+     * </pre>
+     *
+     * <code>optional string reply = 4;</code>
+     */
+    private void clearReply() {
+      
+      reply_ = getDefaultInstance().getReply();
+    }
+    /**
+     * <pre>
+     *reply token of request pattern (instead of the reply string of NATS)
+     * </pre>
+     *
+     * <code>optional string reply = 4;</code>
+     */
+    private void setReplyBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
+      reply_ = value.toStringUtf8();
+    }
+
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (typeCase_ == 1) {
@@ -273,6 +358,9 @@ public final class DataOuterClass {
       if (typeCase_ == 3) {
         output.writeBool(
             3, (boolean)((Boolean) type_));
+      }
+      if (!reply_.isEmpty()) {
+        output.writeString(4, getReply());
       }
     }
 
@@ -294,6 +382,10 @@ public final class DataOuterClass {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(
               3, (boolean)((Boolean) type_));
+      }
+      if (!reply_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeStringSize(4, getReply());
       }
       memoizedSerializedSize = size;
       return size;
@@ -522,6 +614,66 @@ public final class DataOuterClass {
         return this;
       }
 
+      /**
+       * <pre>
+       *reply token of request pattern (instead of the reply string of NATS)
+       * </pre>
+       *
+       * <code>optional string reply = 4;</code>
+       */
+      public String getReply() {
+        return instance.getReply();
+      }
+      /**
+       * <pre>
+       *reply token of request pattern (instead of the reply string of NATS)
+       * </pre>
+       *
+       * <code>optional string reply = 4;</code>
+       */
+      public com.google.protobuf.ByteString
+          getReplyBytes() {
+        return instance.getReplyBytes();
+      }
+      /**
+       * <pre>
+       *reply token of request pattern (instead of the reply string of NATS)
+       * </pre>
+       *
+       * <code>optional string reply = 4;</code>
+       */
+      public Builder setReply(
+          String value) {
+        copyOnWrite();
+        instance.setReply(value);
+        return this;
+      }
+      /**
+       * <pre>
+       *reply token of request pattern (instead of the reply string of NATS)
+       * </pre>
+       *
+       * <code>optional string reply = 4;</code>
+       */
+      public Builder clearReply() {
+        copyOnWrite();
+        instance.clearReply();
+        return this;
+      }
+      /**
+       * <pre>
+       *reply token of request pattern (instead of the reply string of NATS)
+       * </pre>
+       *
+       * <code>optional string reply = 4;</code>
+       */
+      public Builder setReplyBytes(
+          com.google.protobuf.ByteString value) {
+        copyOnWrite();
+        instance.setReplyBytes(value);
+        return this;
+      }
+
       // @@protoc_insertion_point(builder_scope:raas.Data)
     }
     protected final Object dynamicMethod(
@@ -543,6 +695,8 @@ public final class DataOuterClass {
         case VISIT: {
           Visitor visitor = (Visitor) arg0;
           Data other = (Data) arg1;
+          reply_ = visitor.visitString(!reply_.isEmpty(), reply_,
+              !other.reply_.isEmpty(), other.reply_);
           switch (other.getTypeCase()) {
             case RAW: {
               type_ = visitor.visitOneofByteString(
@@ -605,6 +759,12 @@ public final class DataOuterClass {
                 case 24: {
                   typeCase_ = 3;
                   type_ = input.readBool();
+                  break;
+                }
+                case 34: {
+                  String s = input.readStringRequireUtf8();
+
+                  reply_ = s;
                   break;
                 }
               }

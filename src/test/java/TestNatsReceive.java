@@ -17,6 +17,11 @@ public class TestNatsReceive {
         try {
             Connection nc = Nats.connect();
             nc.subscribe("test", msg->{
+                try {
+                    nc.publish(msg.getReplyTo(),msg.getData());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 read++;
             });
             //log
