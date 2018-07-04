@@ -15,25 +15,32 @@ public class UnaryClient {
             //call service
             RaaSNode node = new NatsNode();
             byte[] buf = "hello".getBytes();
-//            Disposable d2 = Observable.interval(0, 50, TimeUnit.MICROSECONDS)
-////                    .doOnNext(x -> System.out.println(Thread.currentThread().getName()))
-//                    .flatMapSingle(x ->
-//                            node.unaryCall("test.s1", buf, 1, TimeUnit.SECONDS)
-//                    )
-////                    .doOnNext(x -> System.out.println(Thread.currentThread().getName()))
-//                    .doOnNext(x -> read++)
-////                    .doOnNext(x -> System.out.println(new String(x)))
-//                    .subscribe(x -> {
-//                    }, err -> System.out.println(err.getMessage()));
-
-            node.call("test.s3",
-                    Observable.interval(0, 70, TimeUnit.MICROSECONDS)
-                            .doOnSubscribe(d -> System.out.println("doOnSubscribe"))
-                            .map(x -> buf)
-            )
-//                    .doOnNext(x -> System.out.println(new String(x)))
+            Observable<Long> one = Observable.interval(2*1000000, 30, TimeUnit.MICROSECONDS);
+            Observable<Long> two = Observable.interval(10*1000000, 25, TimeUnit.MICROSECONDS);
+//            Observable<Long> three = Observable.interval(15*1000000, 15, TimeUnit.MICROSECONDS);
+            Disposable d2 = one
+                    .takeUntil(two)
+                    .mergeWith(two)
+//                    .takeUntil(three)
+//                    .mergeWith(three)
+//                    .doOnNext(x -> System.out.println(Thread.currentThread().getName()))
+                    .flatMapSingle(x ->
+                            node.unaryCall("test.s1", buf, 1, TimeUnit.SECONDS)
+                    )
+//                    .doOnNext(x -> System.out.println(Thread.currentThread().getName()))
                     .doOnNext(x -> read++)
-                    .subscribe(x->{},err->System.out.println(err.getMessage()));
+//                    .doOnNext(x -> System.out.println(new String(x)))
+                    .subscribe(x -> {
+                    }, err -> System.out.println(err.getMessage()));
+
+//            node.call("test.s3",
+//                    Observable.interval(0, 100, TimeUnit.MICROSECONDS)
+//                            .doOnSubscribe(d -> System.out.println("doOnSubscribe"))
+//                            .map(x -> buf)
+//            )
+////                    .doOnNext(x -> System.out.println(new String(x)))
+//                    .doOnNext(x -> read++)
+//                    .subscribe(x->{},err->System.out.println(err.getMessage()));
 
 
             //log

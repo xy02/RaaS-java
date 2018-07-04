@@ -26,9 +26,9 @@ public class NatsNode implements RaaSNode {
 
     private RaaSOptions options;
 
-    private String myRequestPrefix;
+    private String myRequestSubjectName;
 
-    private Subject<MSG> onResponseSubject = PublishSubject.create();
+    private Subject<Response> onResponseSubject = PublishSubject.create();
 
     public NatsNode(RaaSOptions options) throws IOException {
         this.options = options;
@@ -37,10 +37,25 @@ public class NatsNode implements RaaSNode {
         if (!options.isSingleSocket())
             clientConn = new Connection(options.getNatsOptions());
         //request pattern (unary call)
-        myRequestPrefix = "r." + Utils.randomID() + ".";
-        clientConn.subscribeMsg(myRequestPrefix + "*")
+        myRequestSubjectName = "r." + Utils.randomID();
+        clientConn.subscribeMsg(myRequestSubjectName)
+                .map(msg -> DataOuterClass.Data.parseFrom(msg.getBody()))
+                .map(data -> new Response(data.getRequestId(), data.getRaw().toByteArray(), data.getFinal()))
                 .doOnNext(onResponseSubject::onNext)
                 .subscribe();
+    }
+
+    class Response {
+        long requestID;
+        byte[] data;
+        String err;
+
+        Response(long requestID, byte[] data, String err) {
+            this.requestID = requestID;
+            this.data = data;
+            this.err = err;
+//            System.out.printf("id: %d, %s", requestID, new String(data));
+        }
     }
 
     public NatsNode() throws IOException {
@@ -54,27 +69,32 @@ public class NatsNode implements RaaSNode {
         ServiceInfo info = new ServiceInfo();
         return serviceConn
                 .subscribeMsg("us." + serviceName, "service")
-                .doOnNext(msg -> {
-                    DataOuterClass.Data data = DataOuterClass.Data.parseFrom(msg.getBody());
-                    msg.setBody(data.getRaw().toByteArray());
-                    msg.setReplyTo(data.getReply());
-                })
-                .flatMapSingle(msg -> service.onCall(new NatsContext<>(msg.getBody(), this))
-                        .map(raw -> DataOuterClass.Data.newBuilder().setRaw(ByteString.copyFrom(raw)).build().toByteArray())
-                        .doOnError(err -> {
-                            info.errorNum++;
-                            serviceInfoSubject.onNext(info);
-                        })
-                        .onErrorReturn(t -> DataOuterClass.Data.newBuilder().setFinal(t.getMessage()).build().toByteArray())
-                        .doOnSuccess(result -> conn.publish(new MSG(msg.getReplyTo(), result)))
-                        .doOnSuccess(x -> {
-                            info.completedNum++;
-                            serviceInfoSubject.onNext(info);
-                        })
-                        .doOnSubscribe(x -> {
-                            info.calledNum++;
-                            serviceInfoSubject.onNext(info);
-                        })
+                .flatMapSingle(msg -> Single.just(DataOuterClass.Data.parseFrom(msg.getBody()))
+                        .flatMap(data -> service.onCall(new NatsContext<>(data.getRaw().toByteArray(), this))
+                                .map(result -> DataOuterClass.Data.newBuilder()
+                                        .setRaw(ByteString.copyFrom(result))
+                                        .setRequestId(data.getRequestId())
+                                        .build().toByteArray()
+                                )
+                                .doOnError(err -> {
+                                    info.errorNum++;
+                                    serviceInfoSubject.onNext(info);
+                                })
+                                .onErrorReturn(t -> DataOuterClass.Data.newBuilder()
+                                        .setFinal(t.getMessage())
+                                        .setRequestId(data.getRequestId())
+                                        .build().toByteArray()
+                                )
+                                .doOnSuccess(result -> conn.publish(new MSG(msg.getReplyTo(), result)))
+                                .doOnSuccess(x -> {
+                                    info.completedNum++;
+                                    serviceInfoSubject.onNext(info);
+                                })
+                                .doOnSubscribe(x -> {
+                                    info.calledNum++;
+                                    serviceInfoSubject.onNext(info);
+                                })
+                        )
                         .onErrorReturnItem(new byte[]{})
                 )
                 .ofType(ServiceInfo.class)
@@ -86,39 +106,40 @@ public class NatsNode implements RaaSNode {
     @Override
     public Single<byte[]> unaryCall(String serviceName, byte[] outputData, long timeout, TimeUnit timeUnit) {
         IConnection conn = clientConn;
-        String reply = myRequestPrefix + Utils.randomID();
+        long id = plusRequestID();
         return onResponseSubject
-                .filter(msg -> msg.getSubject().equals(reply))
+                .filter(res->res.requestID == id)
+//                .filter(msg -> msg.getSubject().equals(reply))
+                .take(1)
                 .mergeWith(Observable.create(emitter -> {
                             byte[] body = DataOuterClass.Data.newBuilder()
-                                    .setReply(reply)
+                                    .setRequestId(id)
                                     .setRaw(ByteString.copyFrom(outputData))
                                     .build()
                                     .toByteArray();
-                            conn.publish(new MSG("us." + serviceName, body));
+                            conn.publish(new MSG("us." + serviceName, myRequestSubjectName, body));
                             emitter.onComplete();
                         })
 //                        .doOnComplete(() -> System.out.println(Thread.currentThread().getName()))
                 )
 //                .doOnNext(x -> System.out.println(Thread.currentThread().getName()))
-                .take(1)
                 .singleOrError()
                 .timeout(timeout, timeUnit)
-                .map(MSG::getBody)
-                .map(DataOuterClass.Data::parseFrom)
-                .flatMap(data -> Single.create(emitter -> {
-                    switch (data.getTypeCase().getNumber()) {
-                        case 1:
-                            emitter.onSuccess(data.getRaw().toByteArray());
-                            break;
-                        case 2:
-                            emitter.tryOnError(new Exception(data.getFinal()));
-                            break;
-                        default:
-                            throw new Exception("wrong data type");
-                    }
+                .flatMap(res->Single.create(emitter -> {
+                    if(res.data!=null)
+                        emitter.onSuccess(res.data);
+                    else if(res.err!=null && !res.err.isEmpty())
+                        emitter.tryOnError(new Exception(res.err));
+                    else
+                        throw new Exception("wrong data type");
                 }))
                 ;
+    }
+
+    private long requestID;
+
+    private synchronized long plusRequestID() {
+        return ++requestID;
     }
 
     @Override
@@ -257,8 +278,7 @@ public class NatsNode implements RaaSNode {
                     conn.publish(replyMsg);
                     emitter.onComplete();
                 }))
-                .takeUntil(onPongSubject.filter(x->false))
-                ;
+                .takeUntil(onPongSubject.filter(x -> false));
         return service.onCall(new NatsContext<>(inputData, this))
                 .doOnNext(raw -> outputNext(conn, clientPort, raw))
                 .doOnComplete(() -> outputComplete(conn, clientPort))
@@ -281,7 +301,7 @@ public class NatsNode implements RaaSNode {
                 .timeout(options.getHandshakeTimeout(), TimeUnit.SECONDS);
         return Observable.interval(options.getPingInterval(), TimeUnit.SECONDS)
                 .flatMap(x -> ping)
-                .takeUntil(onPongSubject.filter(x->false))
+                .takeUntil(onPongSubject.filter(x -> false))
                 .ofType(byte[].class);
     }
 

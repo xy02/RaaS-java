@@ -16,6 +16,6 @@ message Data {
         //true means ping, false means pong
         bool ping_pong = 3;
     }
-    //reply token of request pattern (instead of the reply string of NATS)
-    string reply = 4;
+    //request id
+    int64 request_id = 5;
 }

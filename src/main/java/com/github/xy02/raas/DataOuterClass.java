@@ -50,21 +50,12 @@ public final class DataOuterClass {
 
     /**
      * <pre>
-     *reply token of request pattern (instead of the reply string of NATS)
+     *request id
      * </pre>
      *
-     * <code>optional string reply = 4;</code>
+     * <code>optional int64 request_id = 5;</code>
      */
-    String getReply();
-    /**
-     * <pre>
-     *reply token of request pattern (instead of the reply string of NATS)
-     * </pre>
-     *
-     * <code>optional string reply = 4;</code>
-     */
-    com.google.protobuf.ByteString
-        getReplyBytes();
+    long getRequestId();
 
     public Data.TypeCase getTypeCase();
   }
@@ -77,7 +68,6 @@ public final class DataOuterClass {
       // @@protoc_insertion_point(message_implements:raas.Data)
       DataOrBuilder {
     private Data() {
-      reply_ = "";
     }
     private int typeCase_ = 0;
     private Object type_;
@@ -280,70 +270,39 @@ public final class DataOuterClass {
       }
     }
 
-    public static final int REPLY_FIELD_NUMBER = 4;
-    private String reply_;
+    public static final int REQUEST_ID_FIELD_NUMBER = 5;
+    private long requestId_;
     /**
      * <pre>
-     *reply token of request pattern (instead of the reply string of NATS)
+     *request id
      * </pre>
      *
-     * <code>optional string reply = 4;</code>
+     * <code>optional int64 request_id = 5;</code>
      */
-    public String getReply() {
-      return reply_;
+    public long getRequestId() {
+      return requestId_;
     }
     /**
      * <pre>
-     *reply token of request pattern (instead of the reply string of NATS)
+     *request id
      * </pre>
      *
-     * <code>optional string reply = 4;</code>
+     * <code>optional int64 request_id = 5;</code>
      */
-    public com.google.protobuf.ByteString
-        getReplyBytes() {
-      return com.google.protobuf.ByteString.copyFromUtf8(reply_);
-    }
-    /**
-     * <pre>
-     *reply token of request pattern (instead of the reply string of NATS)
-     * </pre>
-     *
-     * <code>optional string reply = 4;</code>
-     */
-    private void setReply(
-        String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
-      reply_ = value;
-    }
-    /**
-     * <pre>
-     *reply token of request pattern (instead of the reply string of NATS)
-     * </pre>
-     *
-     * <code>optional string reply = 4;</code>
-     */
-    private void clearReply() {
+    private void setRequestId(long value) {
       
-      reply_ = getDefaultInstance().getReply();
+      requestId_ = value;
     }
     /**
      * <pre>
-     *reply token of request pattern (instead of the reply string of NATS)
+     *request id
      * </pre>
      *
-     * <code>optional string reply = 4;</code>
+     * <code>optional int64 request_id = 5;</code>
      */
-    private void setReplyBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
+    private void clearRequestId() {
       
-      reply_ = value.toStringUtf8();
+      requestId_ = 0L;
     }
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
@@ -359,8 +318,8 @@ public final class DataOuterClass {
         output.writeBool(
             3, (boolean)((Boolean) type_));
       }
-      if (!reply_.isEmpty()) {
-        output.writeString(4, getReply());
+      if (requestId_ != 0L) {
+        output.writeInt64(5, requestId_);
       }
     }
 
@@ -383,9 +342,9 @@ public final class DataOuterClass {
           .computeBoolSize(
               3, (boolean)((Boolean) type_));
       }
-      if (!reply_.isEmpty()) {
+      if (requestId_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeStringSize(4, getReply());
+          .computeInt64Size(5, requestId_);
       }
       memoizedSerializedSize = size;
       return size;
@@ -616,61 +575,36 @@ public final class DataOuterClass {
 
       /**
        * <pre>
-       *reply token of request pattern (instead of the reply string of NATS)
+       *request id
        * </pre>
        *
-       * <code>optional string reply = 4;</code>
+       * <code>optional int64 request_id = 5;</code>
        */
-      public String getReply() {
-        return instance.getReply();
+      public long getRequestId() {
+        return instance.getRequestId();
       }
       /**
        * <pre>
-       *reply token of request pattern (instead of the reply string of NATS)
+       *request id
        * </pre>
        *
-       * <code>optional string reply = 4;</code>
+       * <code>optional int64 request_id = 5;</code>
        */
-      public com.google.protobuf.ByteString
-          getReplyBytes() {
-        return instance.getReplyBytes();
-      }
-      /**
-       * <pre>
-       *reply token of request pattern (instead of the reply string of NATS)
-       * </pre>
-       *
-       * <code>optional string reply = 4;</code>
-       */
-      public Builder setReply(
-          String value) {
+      public Builder setRequestId(long value) {
         copyOnWrite();
-        instance.setReply(value);
+        instance.setRequestId(value);
         return this;
       }
       /**
        * <pre>
-       *reply token of request pattern (instead of the reply string of NATS)
+       *request id
        * </pre>
        *
-       * <code>optional string reply = 4;</code>
+       * <code>optional int64 request_id = 5;</code>
        */
-      public Builder clearReply() {
+      public Builder clearRequestId() {
         copyOnWrite();
-        instance.clearReply();
-        return this;
-      }
-      /**
-       * <pre>
-       *reply token of request pattern (instead of the reply string of NATS)
-       * </pre>
-       *
-       * <code>optional string reply = 4;</code>
-       */
-      public Builder setReplyBytes(
-          com.google.protobuf.ByteString value) {
-        copyOnWrite();
-        instance.setReplyBytes(value);
+        instance.clearRequestId();
         return this;
       }
 
@@ -695,8 +629,8 @@ public final class DataOuterClass {
         case VISIT: {
           Visitor visitor = (Visitor) arg0;
           Data other = (Data) arg1;
-          reply_ = visitor.visitString(!reply_.isEmpty(), reply_,
-              !other.reply_.isEmpty(), other.reply_);
+          requestId_ = visitor.visitLong(requestId_ != 0L, requestId_,
+              other.requestId_ != 0L, other.requestId_);
           switch (other.getTypeCase()) {
             case RAW: {
               type_ = visitor.visitOneofByteString(
@@ -761,10 +695,9 @@ public final class DataOuterClass {
                   type_ = input.readBool();
                   break;
                 }
-                case 34: {
-                  String s = input.readStringRequireUtf8();
+                case 40: {
 
-                  reply_ = s;
+                  requestId_ = input.readInt64();
                   break;
                 }
               }
