@@ -48,15 +48,6 @@ public final class DataOuterClass {
      */
     boolean getPingPong();
 
-    /**
-     * <pre>
-     *request id
-     * </pre>
-     *
-     * <code>optional int64 request_id = 5;</code>
-     */
-    long getRequestId();
-
     public Data.TypeCase getTypeCase();
   }
   /**
@@ -270,41 +261,6 @@ public final class DataOuterClass {
       }
     }
 
-    public static final int REQUEST_ID_FIELD_NUMBER = 5;
-    private long requestId_;
-    /**
-     * <pre>
-     *request id
-     * </pre>
-     *
-     * <code>optional int64 request_id = 5;</code>
-     */
-    public long getRequestId() {
-      return requestId_;
-    }
-    /**
-     * <pre>
-     *request id
-     * </pre>
-     *
-     * <code>optional int64 request_id = 5;</code>
-     */
-    private void setRequestId(long value) {
-      
-      requestId_ = value;
-    }
-    /**
-     * <pre>
-     *request id
-     * </pre>
-     *
-     * <code>optional int64 request_id = 5;</code>
-     */
-    private void clearRequestId() {
-      
-      requestId_ = 0L;
-    }
-
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (typeCase_ == 1) {
@@ -317,9 +273,6 @@ public final class DataOuterClass {
       if (typeCase_ == 3) {
         output.writeBool(
             3, (boolean)((Boolean) type_));
-      }
-      if (requestId_ != 0L) {
-        output.writeInt64(5, requestId_);
       }
     }
 
@@ -341,10 +294,6 @@ public final class DataOuterClass {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(
               3, (boolean)((Boolean) type_));
-      }
-      if (requestId_ != 0L) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(5, requestId_);
       }
       memoizedSerializedSize = size;
       return size;
@@ -573,41 +522,6 @@ public final class DataOuterClass {
         return this;
       }
 
-      /**
-       * <pre>
-       *request id
-       * </pre>
-       *
-       * <code>optional int64 request_id = 5;</code>
-       */
-      public long getRequestId() {
-        return instance.getRequestId();
-      }
-      /**
-       * <pre>
-       *request id
-       * </pre>
-       *
-       * <code>optional int64 request_id = 5;</code>
-       */
-      public Builder setRequestId(long value) {
-        copyOnWrite();
-        instance.setRequestId(value);
-        return this;
-      }
-      /**
-       * <pre>
-       *request id
-       * </pre>
-       *
-       * <code>optional int64 request_id = 5;</code>
-       */
-      public Builder clearRequestId() {
-        copyOnWrite();
-        instance.clearRequestId();
-        return this;
-      }
-
       // @@protoc_insertion_point(builder_scope:raas.Data)
     }
     protected final Object dynamicMethod(
@@ -629,8 +543,6 @@ public final class DataOuterClass {
         case VISIT: {
           Visitor visitor = (Visitor) arg0;
           Data other = (Data) arg1;
-          requestId_ = visitor.visitLong(requestId_ != 0L, requestId_,
-              other.requestId_ != 0L, other.requestId_);
           switch (other.getTypeCase()) {
             case RAW: {
               type_ = visitor.visitOneofByteString(
@@ -693,11 +605,6 @@ public final class DataOuterClass {
                 case 24: {
                   typeCase_ = 3;
                   type_ = input.readBool();
-                  break;
-                }
-                case 40: {
-
-                  requestId_ = input.readInt64();
                   break;
                 }
               }

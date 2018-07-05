@@ -26,36 +26,12 @@ public class NatsNode implements RaaSNode {
 
     private RaaSOptions options;
 
-    private String myRequestSubjectName;
-
-    private Subject<Response> onResponseSubject = PublishSubject.create();
-
     public NatsNode(RaaSOptions options) throws IOException {
         this.options = options;
         serviceConn = new Connection(options.getNatsOptions());
         clientConn = serviceConn;
         if (!options.isSingleSocket())
             clientConn = new Connection(options.getNatsOptions());
-        //request pattern (unary call)
-        myRequestSubjectName = "r." + Utils.randomID();
-        clientConn.subscribeMsg(myRequestSubjectName)
-                .map(msg -> DataOuterClass.Data.parseFrom(msg.getBody()))
-                .map(data -> new Response(data.getRequestId(), data.getRaw().toByteArray(), data.getFinal()))
-                .doOnNext(onResponseSubject::onNext)
-                .subscribe();
-    }
-
-    class Response {
-        long requestID;
-        byte[] data;
-        String err;
-
-        Response(long requestID, byte[] data, String err) {
-            this.requestID = requestID;
-            this.data = data;
-            this.err = err;
-//            System.out.printf("id: %d, %s", requestID, new String(data));
-        }
     }
 
     public NatsNode() throws IOException {
@@ -73,7 +49,7 @@ public class NatsNode implements RaaSNode {
                         .flatMap(data -> service.onCall(new NatsContext<>(data.getRaw().toByteArray(), this))
                                 .map(result -> DataOuterClass.Data.newBuilder()
                                         .setRaw(ByteString.copyFrom(result))
-                                        .setRequestId(data.getRequestId())
+//                                        .setRequestId(data.getRequestId())
                                         .build().toByteArray()
                                 )
                                 .doOnError(err -> {
@@ -82,7 +58,7 @@ public class NatsNode implements RaaSNode {
                                 })
                                 .onErrorReturn(t -> DataOuterClass.Data.newBuilder()
                                         .setFinal(t.getMessage())
-                                        .setRequestId(data.getRequestId())
+//                                        .setRequestId(data.getRequestId())
                                         .build().toByteArray()
                                 )
                                 .doOnSuccess(result -> conn.publish(new MSG(msg.getReplyTo(), result)))
@@ -106,40 +82,27 @@ public class NatsNode implements RaaSNode {
     @Override
     public Single<byte[]> unaryCall(String serviceName, byte[] outputData, long timeout, TimeUnit timeUnit) {
         IConnection conn = clientConn;
-        long id = plusRequestID();
-        return onResponseSubject
-                .filter(res->res.requestID == id)
-//                .filter(msg -> msg.getSubject().equals(reply))
-                .take(1)
-                .mergeWith(Observable.create(emitter -> {
-                            byte[] body = DataOuterClass.Data.newBuilder()
-                                    .setRequestId(id)
-                                    .setRaw(ByteString.copyFrom(outputData))
-                                    .build()
-                                    .toByteArray();
-                            conn.publish(new MSG("us." + serviceName, myRequestSubjectName, body));
-                            emitter.onComplete();
-                        })
-//                        .doOnComplete(() -> System.out.println(Thread.currentThread().getName()))
-                )
-//                .doOnNext(x -> System.out.println(Thread.currentThread().getName()))
-                .singleOrError()
-                .timeout(timeout, timeUnit)
-                .flatMap(res->Single.create(emitter -> {
-                    if(res.data!=null)
-                        emitter.onSuccess(res.data);
-                    else if(res.err!=null && !res.err.isEmpty())
-                        emitter.tryOnError(new Exception(res.err));
-                    else
-                        throw new Exception("wrong data type");
-                }))
-                ;
-    }
-
-    private long requestID;
-
-    private synchronized long plusRequestID() {
-        return ++requestID;
+        byte[] body = DataOuterClass.Data.newBuilder()
+                .setRaw(ByteString.copyFrom(outputData))
+                .build()
+                .toByteArray();
+        return conn.request("us." + serviceName, body, timeout, timeUnit)
+                .map(msg -> DataOuterClass.Data.parseFrom(msg.getBody()))
+                .flatMap(data -> Single.create(emitter -> {
+                    switch (data.getTypeCase()) {
+                        case RAW:
+                            emitter.onSuccess(data.getRaw().toByteArray());
+                            break;
+                        case FINAL:
+                            String err = data.getFinal();
+                            if (err == null)
+                                err = "no message";
+                            emitter.tryOnError(new Exception(err));
+                            break;
+                        default:
+                            throw new Exception("wrong data type");
+                    }
+                }));
     }
 
     @Override

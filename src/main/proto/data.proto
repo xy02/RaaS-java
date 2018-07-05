@@ -16,6 +16,4 @@ message Data {
         //true means ping, false means pong
         bool ping_pong = 3;
     }
-    //request id
-    int64 request_id = 5;
 }

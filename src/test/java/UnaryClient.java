@@ -1,5 +1,6 @@
 import com.github.xy02.raas.RaaSNode;
 import com.github.xy02.raas.nats.NatsNode;
+import com.github.xy02.raas.nats.RaaSOptions;
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -13,14 +14,14 @@ public class UnaryClient {
     public static void main(String[] args) {
         try {
             //call service
-            RaaSNode node = new NatsNode();
+            RaaSNode node = new NatsNode(new RaaSOptions());
             byte[] buf = "hello".getBytes();
-            Observable<Long> one = Observable.interval(2*1000000, 30, TimeUnit.MICROSECONDS);
-            Observable<Long> two = Observable.interval(10*1000000, 25, TimeUnit.MICROSECONDS);
+            Observable<Long> one = Observable.interval(2*1000000, 3, TimeUnit.MICROSECONDS);
+//            Observable<Long> two = Observable.interval(5*1000000, 25, TimeUnit.MICROSECONDS);
 //            Observable<Long> three = Observable.interval(15*1000000, 15, TimeUnit.MICROSECONDS);
             Disposable d2 = one
-                    .takeUntil(two)
-                    .mergeWith(two)
+//                    .takeUntil(two)
+//                    .mergeWith(two)
 //                    .takeUntil(three)
 //                    .mergeWith(three)
 //                    .doOnNext(x -> System.out.println(Thread.currentThread().getName()))
