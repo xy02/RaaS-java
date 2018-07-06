@@ -28,7 +28,7 @@ public class RaaSOptions {
     }
 
     //interval of service sending ping in seconds
-    private long pingInterval = 4;
+    private long pingInterval = 30;
 
     public long getPingInterval() {
         return pingInterval;
@@ -40,7 +40,7 @@ public class RaaSOptions {
     }
 
     //timeout of receiving transfer data in seconds
-    private long inputTimeout = 90;
+    private long inputTimeout = 40;
 
     public long getInputTimeout() {
         return inputTimeout;

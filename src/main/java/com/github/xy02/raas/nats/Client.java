@@ -57,22 +57,9 @@ class Client {
         long sid = plusSessionID();
 
         Subject<String> onPingSubject = PublishSubject.create();
-        onPingSubject
-                .doOnNext(x -> System.out.println("onPing"))
-                .doOnNext(ping -> {
-                    String serverID = serverIDMap.get(sid);
-                    if (serverID == null)
-                        return;
-                    byte[] pongMessage = Data.ClientOutput.newBuilder()
-                            .setSessionId(sid)
-                            .setPong(ping)
-                            .build().toByteArray();
-                    conn.publish(new MSG(serverID, pongMessage));
-                })
-                .subscribe();
+
         //listen input data
         return Observable.<Data.ServerOutput>create(emitter -> emitterMap.put(sid, emitter))
-                .timeout(options.getInputTimeout(), TimeUnit.SECONDS)
                 .takeUntil(data -> data.getTypeCase() == FINAL)
                 .flatMap(data -> observeInputData(data, onPingSubject))
                 .mergeWith(
@@ -86,6 +73,22 @@ class Client {
                             conn.publish(new MSG("rs." + serviceName, body));
                             emitter.onComplete();
                         })
+                )
+                .mergeWith(
+                        onPingSubject
+                                .timeout(options.getInputTimeout(), TimeUnit.SECONDS)
+                                .doOnNext(x -> System.out.println("onPing"))
+                                .doOnNext(ping -> {
+                                    String serverID = serverIDMap.get(sid);
+                                    if (serverID == null)
+                                        return;
+                                    byte[] pongMessage = Data.ClientOutput.newBuilder()
+                                            .setSessionId(sid)
+                                            .setPong(ping)
+                                            .build().toByteArray();
+                                    conn.publish(new MSG(serverID, pongMessage));
+                                })
+                                .ofType(byte[].class)
                 )
                 //clean
                 .doFinally(() -> {

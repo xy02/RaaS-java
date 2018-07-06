@@ -12,7 +12,7 @@ public class Test {
             RaaSNode node = new NatsNode();
             //registerService service
             node.registerService("test.s1",
-                    (bin, ctx) -> Observable.interval(0, 2, TimeUnit.MICROSECONDS)
+                    (bin, ctx) -> Observable.interval(0, 1, TimeUnit.NANOSECONDS)
 //                            .doOnNext(x -> System.out.println(new String(x)))
                             .map(x -> new String(bin) + x)
                             .map(String::getBytes)
