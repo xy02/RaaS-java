@@ -78,12 +78,10 @@ class Client {
                 .mergeWith(
                         //send output data
                         Observable.create(emitter -> {
-                            byte[] body = Data.ClientOutput.newBuilder()
+                            byte[] body = Data.Request.newBuilder()
                                     .setSessionId(sid)
-                                    .setRequest(Data.Request.newBuilder()
-                                            .setClientId(clientID)
-                                            .setBin(ByteString.copyFrom(outputBin))
-                                            .build())
+                                    .setClientId(clientID)
+                                    .setBin(ByteString.copyFrom(outputBin))
                                     .build().toByteArray();
                             conn.publish(new MSG("rs." + serviceName, body));
                             emitter.onComplete();

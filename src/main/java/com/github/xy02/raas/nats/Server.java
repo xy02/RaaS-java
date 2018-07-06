@@ -12,6 +12,7 @@ import io.reactivex.subjects.Subject;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 public class Server {
 
@@ -49,8 +50,8 @@ public class Server {
         ServiceInfo info = new ServiceInfo();
         return conn
                 .subscribeMsg("rs." + serviceName, "service")
-                .map(msg -> Data.ClientOutput.parseFrom(msg.getBody()))
-                .flatMap(data -> onServiceConnected(service, data.getSessionId(),data.getRequest().getClientId(),data.getRequest().getBin().toByteArray())
+                .map(msg -> Data.Request.parseFrom(msg.getBody()))
+                .flatMap(data -> onServiceConnected(service, data)
                         .doOnComplete(() -> {
                             info.completedNum++;
                             serviceInfoSubject.onNext(info);
@@ -71,35 +72,35 @@ public class Server {
     }
 
     //temporarily emit output data
-    private Observable<byte[]> onServiceConnected(Service service, long sessionID, String clientID, byte[] req) {
+    private Observable<byte[]> onServiceConnected(Service service, Data.Request request) {
+        long sessionID = request.getSessionId();
+        String clientID = request.getClientId();
 //        System.out.println(clientID);
         Subject<String> onPongSubject = PublishSubject.create();
 
-        Observable.<Data.ClientOutput>create(emitter -> emitterMap.put(sessionID, emitter))
-                .takeUntil(data -> data.getTypeCase() == Data.ClientOutput.TypeCase.CANCEL )
-                .doOnNext(data-> {
+        return Observable.<Data.ClientOutput>create(emitter -> emitterMap.put(sessionID, emitter))
+                .takeUntil(data -> data.getTypeCase() == Data.ClientOutput.TypeCase.CANCEL)
+                .doOnNext(data -> {
                     if (data.getTypeCase() == Data.ClientOutput.TypeCase.PONG)
                         onPongSubject.onNext(data.getPong());
                 })
                 .ofType(byte[].class)
                 .mergeWith(
-                        service.onCall(req, context)
+                        service.onCall(request.getBin().toByteArray(), context)
                                 .doOnNext(bin -> outputNext(conn, clientID, sessionID, bin))
                                 .doOnComplete(() -> outputComplete(conn, clientID, sessionID))
                                 .doOnError(err -> outputError(conn, clientID, sessionID, err))
                                 .doFinally(onPongSubject::onComplete)
                                 .onErrorResumeNext(Observable.empty())
                 )
-
-
-                .mergeWith(intervalPing(conn, clientNodeID,sessionID, onPongSubject))
+                .mergeWith(intervalPing(conn, clientID, sessionID, onPongSubject))
                 .mergeWith(Observable.create(emitter -> {
-                    //response node id
-                    byte[] firstReply = DataOuterClass.Data.newBuilder()
-                            .setNodeId(nodeID)
+                    //response server id
+                    byte[] firstReply = Data.ServerOutput.newBuilder()
+                            .setServerId(serverID)
                             .setSessionId(sessionID)
                             .build().toByteArray();
-                    MSG replyMsg = new MSG(clientNodeID, firstReply);
+                    MSG replyMsg = new MSG(clientID, firstReply);
                     conn.publish(replyMsg);
                     emitter.onComplete();
                 }))
@@ -107,8 +108,27 @@ public class Server {
                 ;
     }
 
+    private Observable<byte[]> intervalPing(IConnection conn, String clientID, long sessionID, Observable<String> onPongSubject) {
+        Observable<String> ping = onPongSubject
+                .doOnNext(x -> System.out.println("onPong"))
+                .take(1)
+                .mergeWith(Observable.create(emitter -> {
+                    byte[] pingMessage = Data.ServerOutput.newBuilder()
+                            .setSessionId(sessionID)
+                            .setPing("")
+                            .build().toByteArray();
+                    conn.publish(new MSG(clientID, pingMessage));
+                    emitter.onComplete();
+                }))
+                .timeout(options.getPongTimeout(), TimeUnit.SECONDS);
+        return Observable.interval(options.getPingInterval(), TimeUnit.SECONDS)
+                .flatMap(x -> ping)
+                .takeUntil(onPongSubject.filter(x -> false))
+                .ofType(byte[].class);
+    }
+
     private void outputNext(IConnection conn, String nodeID, long sessionID, byte[] bin) throws IOException {
-        byte[] data = DataOuterClass.Data.newBuilder()
+        byte[] data = Data.ServerOutput.newBuilder()
                 .setSessionId(sessionID)
                 .setBin(ByteString.copyFrom(bin))
                 .build().toByteArray();
@@ -116,7 +136,7 @@ public class Server {
     }
 
     private void outputComplete(IConnection conn, String nodeID, long sessionID) throws IOException {
-        byte[] data = DataOuterClass.Data.newBuilder()
+        byte[] data = Data.ServerOutput.newBuilder()
                 .setSessionId(sessionID)
                 .setFinal("")
                 .build().toByteArray();
@@ -124,7 +144,7 @@ public class Server {
     }
 
     private void outputError(IConnection conn, String nodeID, long sessionID, Throwable t) throws IOException {
-        byte[] body = DataOuterClass.Data.newBuilder()
+        byte[] body = Data.ServerOutput.newBuilder()
                 .setSessionId(sessionID)
                 .setFinal(t.getMessage())
                 .build().toByteArray();
