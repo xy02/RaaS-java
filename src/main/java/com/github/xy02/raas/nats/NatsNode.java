@@ -2,6 +2,7 @@ package com.github.xy02.raas.nats;
 
 import com.github.xy02.nats.Connection;
 import com.github.xy02.nats.IConnection;
+import com.github.xy02.nats.MSG;
 import com.github.xy02.raas.RaaSNode;
 import com.github.xy02.raas.Service;
 import com.github.xy02.raas.ServiceInfo;
@@ -20,6 +21,7 @@ public class NatsNode implements RaaSNode {
 
     private RaaSOptions options;
 
+    private IConnection clientConn;
 
     public NatsNode(RaaSOptions options) throws IOException {
         this.options = options;
@@ -30,6 +32,7 @@ public class NatsNode implements RaaSNode {
 
         client = new Client(clientConn, options);
         server = new Server(serverConn, this, options);
+        this.clientConn = clientConn;
     }
 
     public NatsNode() throws IOException {
@@ -38,7 +41,7 @@ public class NatsNode implements RaaSNode {
 
     @Override
     public Observable<byte[]> callService(String serviceName, byte[] outputBin) {
-        return client.callService(serviceName,outputBin);
+        return client.callService(serviceName, outputBin);
     }
 
     @Override
@@ -123,21 +126,22 @@ public class NatsNode implements RaaSNode {
 
     @Override
     public Observable<ServiceInfo> registerUnaryService(String serviceName, UnaryService service) {
-        return null;
+        return server.registerUnaryService(serviceName, service);
     }
 
     @Override
     public Single<byte[]> callUnaryService(String serviceName, byte[] outputBin, long timeout, TimeUnit timeUnit) {
-        return null;
+        return client.callUnaryService(serviceName, outputBin, timeout, timeUnit);
     }
 
     @Override
     public Observable<byte[]> subscribe(String subject) {
-        return null;
+        return clientConn.subscribeMsg(subject)
+                .map(MSG::getBody);
     }
 
     @Override
     public void publish(String subject, byte[] data) throws IOException {
-
+        clientConn.publish(new MSG(subject, data));
     }
 }

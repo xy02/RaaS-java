@@ -45,6 +45,34 @@ public class Server {
                 .subscribe();
     }
 
+    public Observable<ServiceInfo> registerUnaryService(String serviceName, UnaryService service) {
+        Subject<ServiceInfo> serviceInfoSubject = PublishSubject.create();
+        ServiceInfo info = new ServiceInfo();
+        return conn.subscribeMsg("us." + serviceName, "service")
+                .map(msg -> Data.Request.parseFrom(msg.getBody()))
+                .flatMapSingle(request -> service.onCall(request.getBin().toByteArray(), context)
+                        .doOnError(err -> {
+                            info.errorNum++;
+                            serviceInfoSubject.onNext(info);
+                        })
+                        .doOnError(err -> outputError(conn, request.getClientId(), request.getSessionId(), err))
+                        .doOnSuccess(x -> {
+                            info.completedNum++;
+                            serviceInfoSubject.onNext(info);
+                        })
+                        .doOnSubscribe(x -> {
+                            info.calledNum++;
+                            serviceInfoSubject.onNext(info);
+                        })
+                        .doOnSuccess(bin -> outputNext(conn, request.getClientId(), request.getSessionId(), bin))
+                )
+                .ofType(ServiceInfo.class)
+                .onErrorResumeNext(Observable.empty())
+                .mergeWith(serviceInfoSubject)
+                .doFinally(serviceInfoSubject::onComplete)
+                ;
+    }
+
     public Observable<ServiceInfo> registerService(String serviceName, Service service) {
         Subject<ServiceInfo> serviceInfoSubject = PublishSubject.create();
         ServiceInfo info = new ServiceInfo();

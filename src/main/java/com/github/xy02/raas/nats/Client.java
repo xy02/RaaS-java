@@ -8,6 +8,7 @@ import com.google.protobuf.ByteString;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.Observer;
+import io.reactivex.Single;
 import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.Subject;
 
@@ -53,7 +54,32 @@ class Client {
                 .subscribe();
     }
 
-    public Observable<byte[]> callService(String serviceName, byte[] outputBin) {
+    Single<byte[]> callUnaryService(String serviceName, byte[] outputBin, long timeout, TimeUnit timeUnit) {
+        long sid = plusSessionID();
+        //listen input data
+        return Observable.<Data.ServerOutput>create(emitter -> emitterMap.put(sid, emitter))
+                .take(1)
+                .flatMap(data -> observeInputData(data, null))
+                .timeout(timeout, timeUnit)
+                .mergeWith(
+                        //send output data
+                        Observable.create(emitter -> {
+                            byte[] body = Data.Request.newBuilder()
+                                    .setSessionId(sid)
+                                    .setClientId(clientID)
+                                    .setBin(ByteString.copyFrom(outputBin))
+                                    .build().toByteArray();
+                            conn.publish(new MSG("us." + serviceName, body));
+                            emitter.onComplete();
+                        })
+                )
+                .singleOrError()
+                //clean
+                .doFinally(() -> emitterMap.remove(sid))
+                ;
+    }
+
+    Observable<byte[]> callService(String serviceName, byte[] outputBin) {
         long sid = plusSessionID();
 
         Subject<String> onPingSubject = PublishSubject.create();
@@ -101,12 +127,11 @@ class Client {
 
     private Observable<byte[]> observeInputData(Data.ServerOutput data, Observer<String> onPing) {
         return Observable.create(emitter -> {
-            long sessionID = data.getSessionId();
             switch (data.getTypeCase()) {
                 case SERVER_ID:
                     String serverID = data.getServerId();
                     if (serverID != null && !serverID.isEmpty())
-                        serverIDMap.put(sessionID, serverID);
+                        serverIDMap.put(data.getSessionId(), serverID);
                     break;
                 case BIN:
                     emitter.onNext(data.getBin().toByteArray());

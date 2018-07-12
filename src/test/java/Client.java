@@ -17,8 +17,8 @@ public class Client {
             byte[] buf = "hello".getBytes();
             Disposable d2 = node.callService("test.s1", buf)
                     .doOnNext(x -> read++)
-//                    .map(x -> new String(x))
-//                    .doOnNext(System.out::println)
+                    .map(x -> new String(x))
+                    .doOnNext(System.out::println)
                     .subscribe(x -> {
                     }, err -> System.out.println(err.getMessage()));
 
