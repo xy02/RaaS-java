@@ -4,7 +4,6 @@ import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 public class Client {
@@ -16,15 +15,12 @@ public class Client {
             //call service
             RaaSNode node = new NatsNode();
             byte[] buf = "hello".getBytes();
-            Disposable d2 = node.call("test.s1",
-                    Observable.interval(0, 2, TimeUnit.MICROSECONDS)
-                            .doOnSubscribe(d -> System.out.println("doOnSubscribe"))
-                            .map(x -> buf)
-            )
+            Disposable d2 = node.callService("test.s1", buf)
                     .doOnNext(x -> read++)
                     .map(x -> new String(x))
-    //                    .doOnNext(System.out::println)
-                    .subscribe(x->{},err->System.out.println(err.getMessage()));
+                    .doOnNext(System.out::println)
+                    .subscribe(x -> {
+                    }, err -> System.out.println(err.getMessage()));
 
 //            Observable.timer(5, TimeUnit.SECONDS).subscribe(x -> d2.dispose());
 //            Observable.timer(10, TimeUnit.SECONDS)
@@ -46,7 +42,7 @@ public class Client {
                     .sample(sample, TimeUnit.SECONDS)
                     .doOnNext(x -> System.out.printf("%d sec read: %d, ops: %d/s\n", x + 1, read, (read - secondsAgo) / sample))
                     .doOnNext(x -> secondsAgo = read)
-    //                    .subscribe(x -> System.out.printf("%d sec read: %d, ops: %d/s\n", x + 1, read, read / (x + 1)));
+                    //                    .subscribe(x -> System.out.printf("%d sec read: %d, ops: %d/s\n", x + 1, read, read / (x + 1)));
                     .subscribe();
 
             //forever

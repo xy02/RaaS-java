@@ -7,13 +7,37 @@ option optimize_for = LITE_RUNTIME;
 
 package raas;
 
-message Data {
-    oneof type{
+message Request {
+    //session id
+    int64 session_id = 1;
+    //client id
+    string client_id = 2;
+    //raw binary data
+    bytes bin = 3;
+}
+
+message ServerOutput {
+    //session id
+    int64 session_id = 1;
+    oneof type {
+        //server id
+        string server_id = 2;
         //raw binary data
-        bytes raw = 1;
+        bytes bin = 3;
         //""(empty string) means complete, "err message"(not empty) means error
-        string final = 2;
-        //true means ping, false means pong
-        bool ping_pong = 3;
+        string final = 4;
+        //PING
+        string ping = 5;
+    }
+}
+
+message ClientOutput {
+    //session id
+    int64 session_id = 1;
+    oneof type{
+        //cancel request
+        string cancel = 2;
+        //client output PONG message when it get PING
+        string pong = 3;
     }
 }

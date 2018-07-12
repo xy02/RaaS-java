@@ -28,7 +28,7 @@ public class RaaSOptions {
     }
 
     //interval of service sending ping in seconds
-    private long pingInterval = 40;
+    private long pingInterval = 30;
 
     public long getPingInterval() {
         return pingInterval;
@@ -40,7 +40,7 @@ public class RaaSOptions {
     }
 
     //timeout of receiving transfer data in seconds
-    private long inputTimeout = 90;
+    private long inputTimeout = 40;
 
     public long getInputTimeout() {
         return inputTimeout;
@@ -51,15 +51,15 @@ public class RaaSOptions {
         return this;
     }
 
-    //timeout of handshake of calling service in seconds(equals to timeout of ping pong)
-    private long handshakeTimeout = 5;
+    //timeout of ping-pong
+    private long pongTimeout = 5;
 
-    public long getHandshakeTimeout() {
-        return handshakeTimeout;
+    public long getPongTimeout() {
+        return pongTimeout;
     }
 
-    public RaaSOptions setHandshakeTimeout(long handshakeTimeout) {
-        this.handshakeTimeout = handshakeTimeout;
+    public RaaSOptions setPongTimeout(long pongTimeout) {
+        this.pongTimeout = pongTimeout;
         return this;
     }
 }

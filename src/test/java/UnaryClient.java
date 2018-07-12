@@ -2,8 +2,6 @@ import com.github.xy02.raas.RaaSNode;
 import com.github.xy02.raas.nats.NatsNode;
 import com.github.xy02.raas.nats.RaaSOptions;
 import io.reactivex.Observable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 import java.util.concurrent.TimeUnit;
 
@@ -16,17 +14,10 @@ public class UnaryClient {
             //call service
             RaaSNode node = new NatsNode(new RaaSOptions());
             byte[] buf = "hello".getBytes();
-            Observable<Long> one = Observable.interval(2*1000000, 3, TimeUnit.MICROSECONDS);
-//            Observable<Long> two = Observable.interval(5*1000000, 25, TimeUnit.MICROSECONDS);
-//            Observable<Long> three = Observable.interval(15*1000000, 15, TimeUnit.MICROSECONDS);
-            Disposable d2 = one
-//                    .takeUntil(two)
-//                    .mergeWith(two)
-//                    .takeUntil(three)
-//                    .mergeWith(three)
+            Observable.interval(0, 5, TimeUnit.MICROSECONDS)
 //                    .doOnNext(x -> System.out.println(Thread.currentThread().getName()))
                     .flatMapSingle(x ->
-                            node.unaryCall("test.s1", buf, 1, TimeUnit.SECONDS)
+                            node.callUnaryService("test.s1", buf, 1, TimeUnit.SECONDS)
                     )
 //                    .doOnNext(x -> System.out.println(Thread.currentThread().getName()))
                     .doOnNext(x -> read++)
@@ -34,17 +25,6 @@ public class UnaryClient {
                     .subscribe(x -> {
                     }, err -> System.out.println(err.getMessage()));
 
-//            node.call("test.s3",
-//                    Observable.interval(0, 100, TimeUnit.MICROSECONDS)
-//                            .doOnSubscribe(d -> System.out.println("doOnSubscribe"))
-//                            .map(x -> buf)
-//            )
-////                    .doOnNext(x -> System.out.println(new String(x)))
-//                    .doOnNext(x -> read++)
-//                    .subscribe(x->{},err->System.out.println(err.getMessage()));
-
-
-            //log
             long sample = 2;
             Observable.interval(1, TimeUnit.SECONDS)
                     .sample(sample, TimeUnit.SECONDS)
