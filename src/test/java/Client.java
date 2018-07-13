@@ -22,7 +22,6 @@ public class Client {
                     .subscribe(x -> {
                     }, err -> System.out.println(err.getMessage()));
 
-
 //            Observable.timer(5, TimeUnit.SECONDS).subscribe(x -> d2.dispose());
 //            Observable.timer(10, TimeUnit.SECONDS)
 //                    .map(x -> "")
