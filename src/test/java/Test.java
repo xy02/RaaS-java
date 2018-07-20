@@ -11,6 +11,9 @@ public class Test {
     public static long secondsAgo = 0;
 
     public static void main(String[] args) {
+        Observable.interval(2,4,TimeUnit.SECONDS)
+                .timeout(Observable.timer(3,TimeUnit.SECONDS),x->Observable.timer(5,TimeUnit.SECONDS))
+                .subscribe(x->{System.out.println("OK");},err->err.printStackTrace());
         try {
             //log
             long sample = 2;
@@ -24,7 +27,7 @@ public class Test {
             RaaSNode node = new NatsNode();
             //registerService service
             node.registerService("test.s1",
-                    (bin, ctx) -> Observable.interval(0, 1, TimeUnit.NANOSECONDS)
+                    (bin, ctx) -> Observable.interval(0, 1, TimeUnit.SECONDS)
 //                            .doOnNext(x -> System.out.println(new String(x)))
                             .map(x -> new String(bin) + x)
                             .map(String::getBytes)

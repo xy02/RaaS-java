@@ -35,7 +35,9 @@ public class RaaSOptions {
     }
 
     public RaaSOptions setPingInterval(long pingInterval) {
-        this.pingInterval = pingInterval;
+        if(pingInterval< this.inputTimeout) {
+            this.pingInterval = pingInterval;
+        }
         return this;
     }
 

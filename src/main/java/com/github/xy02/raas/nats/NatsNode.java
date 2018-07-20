@@ -54,6 +54,11 @@ public class NatsNode implements RaaSNode {
     }
 
     @Override
+    public Single<byte[]> callUnaryService(String serviceName, byte[] outputBin) {
+        return client.callUnaryService(serviceName, outputBin);
+    }
+
+    @Override
     public Single<byte[]> callUnaryService(String serviceName, byte[] outputBin, long timeout, TimeUnit timeUnit) {
         return client.callUnaryService(serviceName, outputBin, timeout, timeUnit);
     }

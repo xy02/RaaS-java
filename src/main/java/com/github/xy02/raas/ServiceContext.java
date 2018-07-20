@@ -9,6 +9,8 @@ import java.util.concurrent.TimeUnit;
 public interface ServiceContext {
     Observable<byte[]> callService(String serviceName, byte[] outputBin);
 
+    Single<byte[]> callUnaryService(String serviceName, byte[] outputBin);
+
     Single<byte[]> callUnaryService(String serviceName, byte[] outputBin, long timeout, TimeUnit timeUnit);
 
     Observable<byte[]> subscribe(String subject);

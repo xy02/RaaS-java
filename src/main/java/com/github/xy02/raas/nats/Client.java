@@ -54,6 +54,10 @@ class Client {
                 .subscribe();
     }
 
+    Single<byte[]> callUnaryService(String serviceName, byte[] outputBin) {
+        return callUnaryService(serviceName, outputBin, options.getPongTimeout(), TimeUnit.SECONDS);
+    }
+
     Single<byte[]> callUnaryService(String serviceName, byte[] outputBin, long timeout, TimeUnit timeUnit) {
         long sid = plusSessionID();
         //listen input data
@@ -86,6 +90,7 @@ class Client {
 
         //listen input data
         return Observable.<Data.ServerOutput>create(emitter -> emitterMap.put(sid, emitter))
+                .timeout(Observable.timer(options.getPongTimeout(), TimeUnit.SECONDS), x -> Observable.timer(options.getInputTimeout(), TimeUnit.SECONDS))
                 .takeUntil(data -> data.getTypeCase() == FINAL)
                 .flatMap(data -> observeInputData(data, onPingSubject))
                 .mergeWith(
@@ -102,7 +107,7 @@ class Client {
                 )
                 .mergeWith(
                         onPingSubject
-                                .timeout(options.getInputTimeout(), TimeUnit.SECONDS)
+//                                .timeout(options.getInputTimeout(), TimeUnit.SECONDS)
                                 .doOnNext(x -> System.out.println("onPing"))
                                 .doOnNext(ping -> {
                                     String serverID = serverIDMap.get(sid);
