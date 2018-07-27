@@ -1,7 +1,6 @@
 import com.github.xy02.raas.RaaSNode;
 import com.github.xy02.raas.nats.NatsNode;
 import io.reactivex.Observable;
-import io.reactivex.Single;
 
 import java.util.concurrent.TimeUnit;
 
@@ -11,9 +10,6 @@ public class Test {
     public static long secondsAgo = 0;
 
     public static void main(String[] args) {
-        Observable.interval(2,4,TimeUnit.SECONDS)
-                .timeout(Observable.timer(3,TimeUnit.SECONDS),x->Observable.timer(5,TimeUnit.SECONDS))
-                .subscribe(x->{System.out.println("OK");},err->err.printStackTrace());
         try {
             //log
             long sample = 2;
@@ -27,23 +23,17 @@ public class Test {
             RaaSNode node = new NatsNode();
             //registerService service
             node.registerService("test.s1",
-                    (bin, ctx) -> Observable.interval(0, 1, TimeUnit.SECONDS)
+                    ctx -> {
+                        System.out.println("tid"+Thread.currentThread().getId());
+                        return Observable.interval(0, 1, TimeUnit.SECONDS)
 //                            .doOnNext(x -> System.out.println(new String(x)))
-                            .map(x -> new String(bin) + x)
-                            .map(String::getBytes)
+                                .map(x -> new String(ctx.getRequestBin()) + x)
+                                .map(String::getBytes);
+                    }
             )
                     .doOnNext(x -> System.out.printf("onCall: %d, onError: %d, onComplete: %d\n", x.calledNum, x.errorNum, x.completedNum))
                     .subscribe();
 
-
-            node.registerUnaryService("test.s1",
-                    (bin, ctx) -> Single.just(bin)
-//                            .doOnSuccess(x -> System.out.println(new String(x)))
-                            .map(x -> new String(x) + "ok")
-                            .map(String::getBytes)
-            )
-//                    .doOnNext(x -> System.out.printf("onCall: %d, onError: %d, onComplete: %d\n", x.calledNum, x.errorNum, x.completedNum))
-                    .subscribe();
             //forever
             Thread.sleep(Long.MAX_VALUE);
         } catch (Exception e) {

@@ -28,7 +28,7 @@ public final class Data {
      *
      * <code>optional string client_id = 2;</code>
      */
-    String getClientId();
+    java.lang.String getClientId();
     /**
      * <pre>
      *client id
@@ -96,7 +96,7 @@ public final class Data {
     }
 
     public static final int CLIENT_ID_FIELD_NUMBER = 2;
-    private String clientId_;
+    private java.lang.String clientId_;
     /**
      * <pre>
      *client id
@@ -104,7 +104,7 @@ public final class Data {
      *
      * <code>optional string client_id = 2;</code>
      */
-    public String getClientId() {
+    public java.lang.String getClientId() {
       return clientId_;
     }
     /**
@@ -126,7 +126,7 @@ public final class Data {
      * <code>optional string client_id = 2;</code>
      */
     private void setClientId(
-        String value) {
+        java.lang.String value) {
       if (value == null) {
     throw new NullPointerException();
   }
@@ -233,60 +233,60 @@ public final class Data {
       return size;
     }
 
-    public static Request parseFrom(
+    public static com.github.xy02.raas.Data.Request parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return com.google.protobuf.GeneratedMessageLite.parseFrom(
           DEFAULT_INSTANCE, data);
     }
-    public static Request parseFrom(
+    public static com.github.xy02.raas.Data.Request parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return com.google.protobuf.GeneratedMessageLite.parseFrom(
           DEFAULT_INSTANCE, data, extensionRegistry);
     }
-    public static Request parseFrom(byte[] data)
+    public static com.github.xy02.raas.Data.Request parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return com.google.protobuf.GeneratedMessageLite.parseFrom(
           DEFAULT_INSTANCE, data);
     }
-    public static Request parseFrom(
+    public static com.github.xy02.raas.Data.Request parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return com.google.protobuf.GeneratedMessageLite.parseFrom(
           DEFAULT_INSTANCE, data, extensionRegistry);
     }
-    public static Request parseFrom(java.io.InputStream input)
+    public static com.github.xy02.raas.Data.Request parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageLite.parseFrom(
           DEFAULT_INSTANCE, input);
     }
-    public static Request parseFrom(
+    public static com.github.xy02.raas.Data.Request parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageLite.parseFrom(
           DEFAULT_INSTANCE, input, extensionRegistry);
     }
-    public static Request parseDelimitedFrom(java.io.InputStream input)
+    public static com.github.xy02.raas.Data.Request parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return parseDelimitedFrom(DEFAULT_INSTANCE, input);
     }
-    public static Request parseDelimitedFrom(
+    public static com.github.xy02.raas.Data.Request parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return parseDelimitedFrom(DEFAULT_INSTANCE, input, extensionRegistry);
     }
-    public static Request parseFrom(
+    public static com.github.xy02.raas.Data.Request parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageLite.parseFrom(
           DEFAULT_INSTANCE, input);
     }
-    public static Request parseFrom(
+    public static com.github.xy02.raas.Data.Request parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -297,7 +297,7 @@ public final class Data {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(Request prototype) {
+    public static Builder newBuilder(com.github.xy02.raas.Data.Request prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
 
@@ -306,9 +306,9 @@ public final class Data {
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageLite.Builder<
-          Request, Builder> implements
+          com.github.xy02.raas.Data.Request, Builder> implements
         // @@protoc_insertion_point(builder_implements:raas.Request)
-        RequestOrBuilder {
+        com.github.xy02.raas.Data.RequestOrBuilder {
       // Construct using com.github.xy02.raas.Data.Request.newBuilder()
       private Builder() {
         super(DEFAULT_INSTANCE);
@@ -357,7 +357,7 @@ public final class Data {
        *
        * <code>optional string client_id = 2;</code>
        */
-      public String getClientId() {
+      public java.lang.String getClientId() {
         return instance.getClientId();
       }
       /**
@@ -379,7 +379,7 @@ public final class Data {
        * <code>optional string client_id = 2;</code>
        */
       public Builder setClientId(
-          String value) {
+          java.lang.String value) {
         copyOnWrite();
         instance.setClientId(value);
         return this;
@@ -448,11 +448,11 @@ public final class Data {
       // @@protoc_insertion_point(builder_scope:raas.Request)
     }
     protected final Object dynamicMethod(
-        MethodToInvoke method,
+        com.google.protobuf.GeneratedMessageLite.MethodToInvoke method,
         Object arg0, Object arg1) {
       switch (method) {
         case NEW_MUTABLE_INSTANCE: {
-          return new Request();
+          return new com.github.xy02.raas.Data.Request();
         }
         case IS_INITIALIZED: {
           return DEFAULT_INSTANCE;
@@ -465,14 +465,14 @@ public final class Data {
         }
         case VISIT: {
           Visitor visitor = (Visitor) arg0;
-          Request other = (Request) arg1;
+          com.github.xy02.raas.Data.Request other = (com.github.xy02.raas.Data.Request) arg1;
           sessionId_ = visitor.visitLong(sessionId_ != 0L, sessionId_,
               other.sessionId_ != 0L, other.sessionId_);
           clientId_ = visitor.visitString(!clientId_.isEmpty(), clientId_,
               !other.clientId_.isEmpty(), other.clientId_);
           bin_ = visitor.visitByteString(bin_ != com.google.protobuf.ByteString.EMPTY, bin_,
               other.bin_ != com.google.protobuf.ByteString.EMPTY, other.bin_);
-          if (visitor == MergeFromVisitor
+          if (visitor == com.google.protobuf.GeneratedMessageLite.MergeFromVisitor
               .INSTANCE) {
           }
           return this;
@@ -527,7 +527,7 @@ public final class Data {
           return DEFAULT_INSTANCE;
         }
         case GET_PARSER: {
-          if (PARSER == null) {    synchronized (Request.class) {
+          if (PARSER == null) {    synchronized (com.github.xy02.raas.Data.Request.class) {
               if (PARSER == null) {
                 PARSER = new DefaultInstanceBasedParser(DEFAULT_INSTANCE);
               }
@@ -541,13 +541,13 @@ public final class Data {
 
 
     // @@protoc_insertion_point(class_scope:raas.Request)
-    private static final Request DEFAULT_INSTANCE;
+    private static final com.github.xy02.raas.Data.Request DEFAULT_INSTANCE;
     static {
       DEFAULT_INSTANCE = new Request();
       DEFAULT_INSTANCE.makeImmutable();
     }
 
-    public static Request getDefaultInstance() {
+    public static com.github.xy02.raas.Data.Request getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -573,18 +573,27 @@ public final class Data {
 
     /**
      * <pre>
-     *server id
+     *sequence number start from 1
      * </pre>
      *
-     * <code>optional string server_id = 2;</code>
+     * <code>optional int64 server_output_sequence = 2;</code>
      */
-    String getServerId();
+    long getServerOutputSequence();
+
     /**
      * <pre>
-     *server id
+     *server id,  server only need to send it once. if client request with output, server should send it immediately
      * </pre>
      *
-     * <code>optional string server_id = 2;</code>
+     * <code>optional string server_id = 6;</code>
+     */
+    java.lang.String getServerId();
+    /**
+     * <pre>
+     *server id,  server only need to send it once. if client request with output, server should send it immediately
+     * </pre>
+     *
+     * <code>optional string server_id = 6;</code>
      */
     com.google.protobuf.ByteString
         getServerIdBytes();
@@ -594,47 +603,47 @@ public final class Data {
      *raw binary data
      * </pre>
      *
-     * <code>optional bytes bin = 3;</code>
+     * <code>optional bytes bin = 7;</code>
      */
     com.google.protobuf.ByteString getBin();
 
     /**
      * <pre>
-     *""(empty string) means complete, "err message"(not empty) means error
-     * </pre>
-     *
-     * <code>optional string final = 4;</code>
-     */
-    String getFinal();
-    /**
-     * <pre>
-     *""(empty string) means complete, "err message"(not empty) means error
-     * </pre>
-     *
-     * <code>optional string final = 4;</code>
-     */
-    com.google.protobuf.ByteString
-        getFinalBytes();
-
-    /**
-     * <pre>
      *PING
      * </pre>
      *
-     * <code>optional string ping = 5;</code>
+     * <code>optional bytes ping = 8;</code>
      */
-    String getPing();
+    com.google.protobuf.ByteString getPing();
+
     /**
      * <pre>
-     *PING
+     *end with final binary data, nullable
      * </pre>
      *
-     * <code>optional string ping = 5;</code>
+     * <code>optional bytes end = 9;</code>
+     */
+    com.google.protobuf.ByteString getEnd();
+
+    /**
+     * <pre>
+     *end with error message
+     * </pre>
+     *
+     * <code>optional string err = 10;</code>
+     */
+    java.lang.String getErr();
+    /**
+     * <pre>
+     *end with error message
+     * </pre>
+     *
+     * <code>optional string err = 10;</code>
      */
     com.google.protobuf.ByteString
-        getPingBytes();
+        getErrBytes();
 
-    public ServerOutput.TypeCase getTypeCase();
+    public com.github.xy02.raas.Data.ServerOutput.BodyCase getBodyCase();
   }
   /**
    * Protobuf type {@code raas.ServerOutput}
@@ -646,34 +655,36 @@ public final class Data {
       ServerOutputOrBuilder {
     private ServerOutput() {
     }
-    private int typeCase_ = 0;
-    private Object type_;
-    public enum TypeCase
+    private int bodyCase_ = 0;
+    private java.lang.Object body_;
+    public enum BodyCase
         implements com.google.protobuf.Internal.EnumLite {
-      SERVER_ID(2),
-      BIN(3),
-      FINAL(4),
-      PING(5),
-      TYPE_NOT_SET(0);
+      SERVER_ID(6),
+      BIN(7),
+      PING(8),
+      END(9),
+      ERR(10),
+      BODY_NOT_SET(0);
       private final int value;
-      private TypeCase(int value) {
+      private BodyCase(int value) {
         this.value = value;
       }
       /**
        * @deprecated Use {@link #forNumber(int)} instead.
        */
-      @Deprecated
-      public static TypeCase valueOf(int value) {
+      @java.lang.Deprecated
+      public static BodyCase valueOf(int value) {
         return forNumber(value);
       }
 
-      public static TypeCase forNumber(int value) {
+      public static BodyCase forNumber(int value) {
         switch (value) {
-          case 2: return SERVER_ID;
-          case 3: return BIN;
-          case 4: return FINAL;
-          case 5: return PING;
-          case 0: return TYPE_NOT_SET;
+          case 6: return SERVER_ID;
+          case 7: return BIN;
+          case 8: return PING;
+          case 9: return END;
+          case 10: return ERR;
+          case 0: return BODY_NOT_SET;
           default: return null;
         }
       }
@@ -682,15 +693,15 @@ public final class Data {
       }
     };
 
-    public TypeCase
-    getTypeCase() {
-      return TypeCase.forNumber(
-          typeCase_);
+    public BodyCase
+    getBodyCase() {
+      return BodyCase.forNumber(
+          bodyCase_);
     }
 
-    private void clearType() {
-      typeCase_ = 0;
-      type_ = null;
+    private void clearBody() {
+      bodyCase_ = 0;
+      body_ = null;
     }
 
     public static final int SESSION_ID_FIELD_NUMBER = 1;
@@ -728,70 +739,105 @@ public final class Data {
       sessionId_ = 0L;
     }
 
-    public static final int SERVER_ID_FIELD_NUMBER = 2;
+    public static final int SERVER_OUTPUT_SEQUENCE_FIELD_NUMBER = 2;
+    private long serverOutputSequence_;
     /**
      * <pre>
-     *server id
+     *sequence number start from 1
      * </pre>
      *
-     * <code>optional string server_id = 2;</code>
+     * <code>optional int64 server_output_sequence = 2;</code>
      */
-    public String getServerId() {
-      String ref = "";
-      if (typeCase_ == 2) {
-        ref = (String) type_;
+    public long getServerOutputSequence() {
+      return serverOutputSequence_;
+    }
+    /**
+     * <pre>
+     *sequence number start from 1
+     * </pre>
+     *
+     * <code>optional int64 server_output_sequence = 2;</code>
+     */
+    private void setServerOutputSequence(long value) {
+      
+      serverOutputSequence_ = value;
+    }
+    /**
+     * <pre>
+     *sequence number start from 1
+     * </pre>
+     *
+     * <code>optional int64 server_output_sequence = 2;</code>
+     */
+    private void clearServerOutputSequence() {
+      
+      serverOutputSequence_ = 0L;
+    }
+
+    public static final int SERVER_ID_FIELD_NUMBER = 6;
+    /**
+     * <pre>
+     *server id,  server only need to send it once. if client request with output, server should send it immediately
+     * </pre>
+     *
+     * <code>optional string server_id = 6;</code>
+     */
+    public java.lang.String getServerId() {
+      java.lang.String ref = "";
+      if (bodyCase_ == 6) {
+        ref = (java.lang.String) body_;
       }
       return ref;
     }
     /**
      * <pre>
-     *server id
+     *server id,  server only need to send it once. if client request with output, server should send it immediately
      * </pre>
      *
-     * <code>optional string server_id = 2;</code>
+     * <code>optional string server_id = 6;</code>
      */
     public com.google.protobuf.ByteString
         getServerIdBytes() {
-      String ref = "";
-      if (typeCase_ == 2) {
-        ref = (String) type_;
+      java.lang.String ref = "";
+      if (bodyCase_ == 6) {
+        ref = (java.lang.String) body_;
       }
       return com.google.protobuf.ByteString.copyFromUtf8(ref);
     }
     /**
      * <pre>
-     *server id
+     *server id,  server only need to send it once. if client request with output, server should send it immediately
      * </pre>
      *
-     * <code>optional string server_id = 2;</code>
+     * <code>optional string server_id = 6;</code>
      */
     private void setServerId(
-        String value) {
+        java.lang.String value) {
       if (value == null) {
     throw new NullPointerException();
   }
-  typeCase_ = 2;
-      type_ = value;
+  bodyCase_ = 6;
+      body_ = value;
     }
     /**
      * <pre>
-     *server id
+     *server id,  server only need to send it once. if client request with output, server should send it immediately
      * </pre>
      *
-     * <code>optional string server_id = 2;</code>
+     * <code>optional string server_id = 6;</code>
      */
     private void clearServerId() {
-      if (typeCase_ == 2) {
-        typeCase_ = 0;
-        type_ = null;
+      if (bodyCase_ == 6) {
+        bodyCase_ = 0;
+        body_ = null;
       }
     }
     /**
      * <pre>
-     *server id
+     *server id,  server only need to send it once. if client request with output, server should send it immediately
      * </pre>
      *
-     * <code>optional string server_id = 2;</code>
+     * <code>optional string server_id = 6;</code>
      */
     private void setServerIdBytes(
         com.google.protobuf.ByteString value) {
@@ -799,21 +845,21 @@ public final class Data {
     throw new NullPointerException();
   }
   checkByteStringIsUtf8(value);
-      typeCase_ = 2;
-      type_ = value.toStringUtf8();
+      bodyCase_ = 6;
+      body_ = value.toStringUtf8();
     }
 
-    public static final int BIN_FIELD_NUMBER = 3;
+    public static final int BIN_FIELD_NUMBER = 7;
     /**
      * <pre>
      *raw binary data
      * </pre>
      *
-     * <code>optional bytes bin = 3;</code>
+     * <code>optional bytes bin = 7;</code>
      */
     public com.google.protobuf.ByteString getBin() {
-      if (typeCase_ == 3) {
-        return (com.google.protobuf.ByteString) type_;
+      if (bodyCase_ == 7) {
+        return (com.google.protobuf.ByteString) body_;
       }
       return com.google.protobuf.ByteString.EMPTY;
     }
@@ -822,177 +868,186 @@ public final class Data {
      *raw binary data
      * </pre>
      *
-     * <code>optional bytes bin = 3;</code>
+     * <code>optional bytes bin = 7;</code>
      */
     private void setBin(com.google.protobuf.ByteString value) {
       if (value == null) {
     throw new NullPointerException();
   }
-  typeCase_ = 3;
-      type_ = value;
+  bodyCase_ = 7;
+      body_ = value;
     }
     /**
      * <pre>
      *raw binary data
      * </pre>
      *
-     * <code>optional bytes bin = 3;</code>
+     * <code>optional bytes bin = 7;</code>
      */
     private void clearBin() {
-      if (typeCase_ == 3) {
-        typeCase_ = 0;
-        type_ = null;
+      if (bodyCase_ == 7) {
+        bodyCase_ = 0;
+        body_ = null;
       }
     }
 
-    public static final int FINAL_FIELD_NUMBER = 4;
+    public static final int PING_FIELD_NUMBER = 8;
     /**
      * <pre>
-     *""(empty string) means complete, "err message"(not empty) means error
+     *PING
      * </pre>
      *
-     * <code>optional string final = 4;</code>
+     * <code>optional bytes ping = 8;</code>
      */
-    public String getFinal() {
-      String ref = "";
-      if (typeCase_ == 4) {
-        ref = (String) type_;
+    public com.google.protobuf.ByteString getPing() {
+      if (bodyCase_ == 8) {
+        return (com.google.protobuf.ByteString) body_;
       }
-      return ref;
+      return com.google.protobuf.ByteString.EMPTY;
     }
     /**
      * <pre>
-     *""(empty string) means complete, "err message"(not empty) means error
+     *PING
      * </pre>
      *
-     * <code>optional string final = 4;</code>
+     * <code>optional bytes ping = 8;</code>
      */
-    public com.google.protobuf.ByteString
-        getFinalBytes() {
-      String ref = "";
-      if (typeCase_ == 4) {
-        ref = (String) type_;
-      }
-      return com.google.protobuf.ByteString.copyFromUtf8(ref);
-    }
-    /**
-     * <pre>
-     *""(empty string) means complete, "err message"(not empty) means error
-     * </pre>
-     *
-     * <code>optional string final = 4;</code>
-     */
-    private void setFinal(
-        String value) {
+    private void setPing(com.google.protobuf.ByteString value) {
       if (value == null) {
     throw new NullPointerException();
   }
-  typeCase_ = 4;
-      type_ = value;
-    }
-    /**
-     * <pre>
-     *""(empty string) means complete, "err message"(not empty) means error
-     * </pre>
-     *
-     * <code>optional string final = 4;</code>
-     */
-    private void clearFinal() {
-      if (typeCase_ == 4) {
-        typeCase_ = 0;
-        type_ = null;
-      }
-    }
-    /**
-     * <pre>
-     *""(empty string) means complete, "err message"(not empty) means error
-     * </pre>
-     *
-     * <code>optional string final = 4;</code>
-     */
-    private void setFinalBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      typeCase_ = 4;
-      type_ = value.toStringUtf8();
-    }
-
-    public static final int PING_FIELD_NUMBER = 5;
-    /**
-     * <pre>
-     *PING
-     * </pre>
-     *
-     * <code>optional string ping = 5;</code>
-     */
-    public String getPing() {
-      String ref = "";
-      if (typeCase_ == 5) {
-        ref = (String) type_;
-      }
-      return ref;
+  bodyCase_ = 8;
+      body_ = value;
     }
     /**
      * <pre>
      *PING
      * </pre>
      *
-     * <code>optional string ping = 5;</code>
-     */
-    public com.google.protobuf.ByteString
-        getPingBytes() {
-      String ref = "";
-      if (typeCase_ == 5) {
-        ref = (String) type_;
-      }
-      return com.google.protobuf.ByteString.copyFromUtf8(ref);
-    }
-    /**
-     * <pre>
-     *PING
-     * </pre>
-     *
-     * <code>optional string ping = 5;</code>
-     */
-    private void setPing(
-        String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  typeCase_ = 5;
-      type_ = value;
-    }
-    /**
-     * <pre>
-     *PING
-     * </pre>
-     *
-     * <code>optional string ping = 5;</code>
+     * <code>optional bytes ping = 8;</code>
      */
     private void clearPing() {
-      if (typeCase_ == 5) {
-        typeCase_ = 0;
-        type_ = null;
+      if (bodyCase_ == 8) {
+        bodyCase_ = 0;
+        body_ = null;
+      }
+    }
+
+    public static final int END_FIELD_NUMBER = 9;
+    /**
+     * <pre>
+     *end with final binary data, nullable
+     * </pre>
+     *
+     * <code>optional bytes end = 9;</code>
+     */
+    public com.google.protobuf.ByteString getEnd() {
+      if (bodyCase_ == 9) {
+        return (com.google.protobuf.ByteString) body_;
+      }
+      return com.google.protobuf.ByteString.EMPTY;
+    }
+    /**
+     * <pre>
+     *end with final binary data, nullable
+     * </pre>
+     *
+     * <code>optional bytes end = 9;</code>
+     */
+    private void setEnd(com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  bodyCase_ = 9;
+      body_ = value;
+    }
+    /**
+     * <pre>
+     *end with final binary data, nullable
+     * </pre>
+     *
+     * <code>optional bytes end = 9;</code>
+     */
+    private void clearEnd() {
+      if (bodyCase_ == 9) {
+        bodyCase_ = 0;
+        body_ = null;
+      }
+    }
+
+    public static final int ERR_FIELD_NUMBER = 10;
+    /**
+     * <pre>
+     *end with error message
+     * </pre>
+     *
+     * <code>optional string err = 10;</code>
+     */
+    public java.lang.String getErr() {
+      java.lang.String ref = "";
+      if (bodyCase_ == 10) {
+        ref = (java.lang.String) body_;
+      }
+      return ref;
+    }
+    /**
+     * <pre>
+     *end with error message
+     * </pre>
+     *
+     * <code>optional string err = 10;</code>
+     */
+    public com.google.protobuf.ByteString
+        getErrBytes() {
+      java.lang.String ref = "";
+      if (bodyCase_ == 10) {
+        ref = (java.lang.String) body_;
+      }
+      return com.google.protobuf.ByteString.copyFromUtf8(ref);
+    }
+    /**
+     * <pre>
+     *end with error message
+     * </pre>
+     *
+     * <code>optional string err = 10;</code>
+     */
+    private void setErr(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  bodyCase_ = 10;
+      body_ = value;
+    }
+    /**
+     * <pre>
+     *end with error message
+     * </pre>
+     *
+     * <code>optional string err = 10;</code>
+     */
+    private void clearErr() {
+      if (bodyCase_ == 10) {
+        bodyCase_ = 0;
+        body_ = null;
       }
     }
     /**
      * <pre>
-     *PING
+     *end with error message
      * </pre>
      *
-     * <code>optional string ping = 5;</code>
+     * <code>optional string err = 10;</code>
      */
-    private void setPingBytes(
+    private void setErrBytes(
         com.google.protobuf.ByteString value) {
       if (value == null) {
     throw new NullPointerException();
   }
   checkByteStringIsUtf8(value);
-      typeCase_ = 5;
-      type_ = value.toStringUtf8();
+      bodyCase_ = 10;
+      body_ = value.toStringUtf8();
     }
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
@@ -1000,18 +1055,26 @@ public final class Data {
       if (sessionId_ != 0L) {
         output.writeInt64(1, sessionId_);
       }
-      if (typeCase_ == 2) {
-        output.writeString(2, getServerId());
+      if (serverOutputSequence_ != 0L) {
+        output.writeInt64(2, serverOutputSequence_);
       }
-      if (typeCase_ == 3) {
+      if (bodyCase_ == 6) {
+        output.writeString(6, getServerId());
+      }
+      if (bodyCase_ == 7) {
         output.writeBytes(
-            3, (com.google.protobuf.ByteString)((com.google.protobuf.ByteString) type_));
+            7, (com.google.protobuf.ByteString)((com.google.protobuf.ByteString) body_));
       }
-      if (typeCase_ == 4) {
-        output.writeString(4, getFinal());
+      if (bodyCase_ == 8) {
+        output.writeBytes(
+            8, (com.google.protobuf.ByteString)((com.google.protobuf.ByteString) body_));
       }
-      if (typeCase_ == 5) {
-        output.writeString(5, getPing());
+      if (bodyCase_ == 9) {
+        output.writeBytes(
+            9, (com.google.protobuf.ByteString)((com.google.protobuf.ByteString) body_));
+      }
+      if (bodyCase_ == 10) {
+        output.writeString(10, getErr());
       }
     }
 
@@ -1024,81 +1087,91 @@ public final class Data {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(1, sessionId_);
       }
-      if (typeCase_ == 2) {
+      if (serverOutputSequence_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeStringSize(2, getServerId());
+          .computeInt64Size(2, serverOutputSequence_);
       }
-      if (typeCase_ == 3) {
+      if (bodyCase_ == 6) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeStringSize(6, getServerId());
+      }
+      if (bodyCase_ == 7) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(
-              3, (com.google.protobuf.ByteString)((com.google.protobuf.ByteString) type_));
+              7, (com.google.protobuf.ByteString)((com.google.protobuf.ByteString) body_));
       }
-      if (typeCase_ == 4) {
+      if (bodyCase_ == 8) {
         size += com.google.protobuf.CodedOutputStream
-          .computeStringSize(4, getFinal());
+          .computeBytesSize(
+              8, (com.google.protobuf.ByteString)((com.google.protobuf.ByteString) body_));
       }
-      if (typeCase_ == 5) {
+      if (bodyCase_ == 9) {
         size += com.google.protobuf.CodedOutputStream
-          .computeStringSize(5, getPing());
+          .computeBytesSize(
+              9, (com.google.protobuf.ByteString)((com.google.protobuf.ByteString) body_));
+      }
+      if (bodyCase_ == 10) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeStringSize(10, getErr());
       }
       memoizedSerializedSize = size;
       return size;
     }
 
-    public static ServerOutput parseFrom(
+    public static com.github.xy02.raas.Data.ServerOutput parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return com.google.protobuf.GeneratedMessageLite.parseFrom(
           DEFAULT_INSTANCE, data);
     }
-    public static ServerOutput parseFrom(
+    public static com.github.xy02.raas.Data.ServerOutput parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return com.google.protobuf.GeneratedMessageLite.parseFrom(
           DEFAULT_INSTANCE, data, extensionRegistry);
     }
-    public static ServerOutput parseFrom(byte[] data)
+    public static com.github.xy02.raas.Data.ServerOutput parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return com.google.protobuf.GeneratedMessageLite.parseFrom(
           DEFAULT_INSTANCE, data);
     }
-    public static ServerOutput parseFrom(
+    public static com.github.xy02.raas.Data.ServerOutput parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return com.google.protobuf.GeneratedMessageLite.parseFrom(
           DEFAULT_INSTANCE, data, extensionRegistry);
     }
-    public static ServerOutput parseFrom(java.io.InputStream input)
+    public static com.github.xy02.raas.Data.ServerOutput parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageLite.parseFrom(
           DEFAULT_INSTANCE, input);
     }
-    public static ServerOutput parseFrom(
+    public static com.github.xy02.raas.Data.ServerOutput parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageLite.parseFrom(
           DEFAULT_INSTANCE, input, extensionRegistry);
     }
-    public static ServerOutput parseDelimitedFrom(java.io.InputStream input)
+    public static com.github.xy02.raas.Data.ServerOutput parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return parseDelimitedFrom(DEFAULT_INSTANCE, input);
     }
-    public static ServerOutput parseDelimitedFrom(
+    public static com.github.xy02.raas.Data.ServerOutput parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return parseDelimitedFrom(DEFAULT_INSTANCE, input, extensionRegistry);
     }
-    public static ServerOutput parseFrom(
+    public static com.github.xy02.raas.Data.ServerOutput parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageLite.parseFrom(
           DEFAULT_INSTANCE, input);
     }
-    public static ServerOutput parseFrom(
+    public static com.github.xy02.raas.Data.ServerOutput parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -1109,7 +1182,7 @@ public final class Data {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(ServerOutput prototype) {
+    public static Builder newBuilder(com.github.xy02.raas.Data.ServerOutput prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
 
@@ -1118,22 +1191,22 @@ public final class Data {
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageLite.Builder<
-          ServerOutput, Builder> implements
+          com.github.xy02.raas.Data.ServerOutput, Builder> implements
         // @@protoc_insertion_point(builder_implements:raas.ServerOutput)
-        ServerOutputOrBuilder {
+        com.github.xy02.raas.Data.ServerOutputOrBuilder {
       // Construct using com.github.xy02.raas.Data.ServerOutput.newBuilder()
       private Builder() {
         super(DEFAULT_INSTANCE);
       }
 
-      public TypeCase
-          getTypeCase() {
-        return instance.getTypeCase();
+      public BodyCase
+          getBodyCase() {
+        return instance.getBodyCase();
       }
 
-      public Builder clearType() {
+      public Builder clearBody() {
         copyOnWrite();
-        instance.clearType();
+        instance.clearBody();
         return this;
       }
 
@@ -1175,20 +1248,55 @@ public final class Data {
 
       /**
        * <pre>
-       *server id
+       *sequence number start from 1
        * </pre>
        *
-       * <code>optional string server_id = 2;</code>
+       * <code>optional int64 server_output_sequence = 2;</code>
        */
-      public String getServerId() {
+      public long getServerOutputSequence() {
+        return instance.getServerOutputSequence();
+      }
+      /**
+       * <pre>
+       *sequence number start from 1
+       * </pre>
+       *
+       * <code>optional int64 server_output_sequence = 2;</code>
+       */
+      public Builder setServerOutputSequence(long value) {
+        copyOnWrite();
+        instance.setServerOutputSequence(value);
+        return this;
+      }
+      /**
+       * <pre>
+       *sequence number start from 1
+       * </pre>
+       *
+       * <code>optional int64 server_output_sequence = 2;</code>
+       */
+      public Builder clearServerOutputSequence() {
+        copyOnWrite();
+        instance.clearServerOutputSequence();
+        return this;
+      }
+
+      /**
+       * <pre>
+       *server id,  server only need to send it once. if client request with output, server should send it immediately
+       * </pre>
+       *
+       * <code>optional string server_id = 6;</code>
+       */
+      public java.lang.String getServerId() {
         return instance.getServerId();
       }
       /**
        * <pre>
-       *server id
+       *server id,  server only need to send it once. if client request with output, server should send it immediately
        * </pre>
        *
-       * <code>optional string server_id = 2;</code>
+       * <code>optional string server_id = 6;</code>
        */
       public com.google.protobuf.ByteString
           getServerIdBytes() {
@@ -1196,23 +1304,23 @@ public final class Data {
       }
       /**
        * <pre>
-       *server id
+       *server id,  server only need to send it once. if client request with output, server should send it immediately
        * </pre>
        *
-       * <code>optional string server_id = 2;</code>
+       * <code>optional string server_id = 6;</code>
        */
       public Builder setServerId(
-          String value) {
+          java.lang.String value) {
         copyOnWrite();
         instance.setServerId(value);
         return this;
       }
       /**
        * <pre>
-       *server id
+       *server id,  server only need to send it once. if client request with output, server should send it immediately
        * </pre>
        *
-       * <code>optional string server_id = 2;</code>
+       * <code>optional string server_id = 6;</code>
        */
       public Builder clearServerId() {
         copyOnWrite();
@@ -1221,10 +1329,10 @@ public final class Data {
       }
       /**
        * <pre>
-       *server id
+       *server id,  server only need to send it once. if client request with output, server should send it immediately
        * </pre>
        *
-       * <code>optional string server_id = 2;</code>
+       * <code>optional string server_id = 6;</code>
        */
       public Builder setServerIdBytes(
           com.google.protobuf.ByteString value) {
@@ -1238,7 +1346,7 @@ public final class Data {
        *raw binary data
        * </pre>
        *
-       * <code>optional bytes bin = 3;</code>
+       * <code>optional bytes bin = 7;</code>
        */
       public com.google.protobuf.ByteString getBin() {
         return instance.getBin();
@@ -1248,7 +1356,7 @@ public final class Data {
        *raw binary data
        * </pre>
        *
-       * <code>optional bytes bin = 3;</code>
+       * <code>optional bytes bin = 7;</code>
        */
       public Builder setBin(com.google.protobuf.ByteString value) {
         copyOnWrite();
@@ -1260,7 +1368,7 @@ public final class Data {
        *raw binary data
        * </pre>
        *
-       * <code>optional bytes bin = 3;</code>
+       * <code>optional bytes bin = 7;</code>
        */
       public Builder clearBin() {
         copyOnWrite();
@@ -1270,72 +1378,12 @@ public final class Data {
 
       /**
        * <pre>
-       *""(empty string) means complete, "err message"(not empty) means error
-       * </pre>
-       *
-       * <code>optional string final = 4;</code>
-       */
-      public String getFinal() {
-        return instance.getFinal();
-      }
-      /**
-       * <pre>
-       *""(empty string) means complete, "err message"(not empty) means error
-       * </pre>
-       *
-       * <code>optional string final = 4;</code>
-       */
-      public com.google.protobuf.ByteString
-          getFinalBytes() {
-        return instance.getFinalBytes();
-      }
-      /**
-       * <pre>
-       *""(empty string) means complete, "err message"(not empty) means error
-       * </pre>
-       *
-       * <code>optional string final = 4;</code>
-       */
-      public Builder setFinal(
-          String value) {
-        copyOnWrite();
-        instance.setFinal(value);
-        return this;
-      }
-      /**
-       * <pre>
-       *""(empty string) means complete, "err message"(not empty) means error
-       * </pre>
-       *
-       * <code>optional string final = 4;</code>
-       */
-      public Builder clearFinal() {
-        copyOnWrite();
-        instance.clearFinal();
-        return this;
-      }
-      /**
-       * <pre>
-       *""(empty string) means complete, "err message"(not empty) means error
-       * </pre>
-       *
-       * <code>optional string final = 4;</code>
-       */
-      public Builder setFinalBytes(
-          com.google.protobuf.ByteString value) {
-        copyOnWrite();
-        instance.setFinalBytes(value);
-        return this;
-      }
-
-      /**
-       * <pre>
        *PING
        * </pre>
        *
-       * <code>optional string ping = 5;</code>
+       * <code>optional bytes ping = 8;</code>
        */
-      public String getPing() {
+      public com.google.protobuf.ByteString getPing() {
         return instance.getPing();
       }
       /**
@@ -1343,21 +1391,9 @@ public final class Data {
        *PING
        * </pre>
        *
-       * <code>optional string ping = 5;</code>
+       * <code>optional bytes ping = 8;</code>
        */
-      public com.google.protobuf.ByteString
-          getPingBytes() {
-        return instance.getPingBytes();
-      }
-      /**
-       * <pre>
-       *PING
-       * </pre>
-       *
-       * <code>optional string ping = 5;</code>
-       */
-      public Builder setPing(
-          String value) {
+      public Builder setPing(com.google.protobuf.ByteString value) {
         copyOnWrite();
         instance.setPing(value);
         return this;
@@ -1367,35 +1403,117 @@ public final class Data {
        *PING
        * </pre>
        *
-       * <code>optional string ping = 5;</code>
+       * <code>optional bytes ping = 8;</code>
        */
       public Builder clearPing() {
         copyOnWrite();
         instance.clearPing();
         return this;
       }
+
       /**
        * <pre>
-       *PING
+       *end with final binary data, nullable
        * </pre>
        *
-       * <code>optional string ping = 5;</code>
+       * <code>optional bytes end = 9;</code>
        */
-      public Builder setPingBytes(
+      public com.google.protobuf.ByteString getEnd() {
+        return instance.getEnd();
+      }
+      /**
+       * <pre>
+       *end with final binary data, nullable
+       * </pre>
+       *
+       * <code>optional bytes end = 9;</code>
+       */
+      public Builder setEnd(com.google.protobuf.ByteString value) {
+        copyOnWrite();
+        instance.setEnd(value);
+        return this;
+      }
+      /**
+       * <pre>
+       *end with final binary data, nullable
+       * </pre>
+       *
+       * <code>optional bytes end = 9;</code>
+       */
+      public Builder clearEnd() {
+        copyOnWrite();
+        instance.clearEnd();
+        return this;
+      }
+
+      /**
+       * <pre>
+       *end with error message
+       * </pre>
+       *
+       * <code>optional string err = 10;</code>
+       */
+      public java.lang.String getErr() {
+        return instance.getErr();
+      }
+      /**
+       * <pre>
+       *end with error message
+       * </pre>
+       *
+       * <code>optional string err = 10;</code>
+       */
+      public com.google.protobuf.ByteString
+          getErrBytes() {
+        return instance.getErrBytes();
+      }
+      /**
+       * <pre>
+       *end with error message
+       * </pre>
+       *
+       * <code>optional string err = 10;</code>
+       */
+      public Builder setErr(
+          java.lang.String value) {
+        copyOnWrite();
+        instance.setErr(value);
+        return this;
+      }
+      /**
+       * <pre>
+       *end with error message
+       * </pre>
+       *
+       * <code>optional string err = 10;</code>
+       */
+      public Builder clearErr() {
+        copyOnWrite();
+        instance.clearErr();
+        return this;
+      }
+      /**
+       * <pre>
+       *end with error message
+       * </pre>
+       *
+       * <code>optional string err = 10;</code>
+       */
+      public Builder setErrBytes(
           com.google.protobuf.ByteString value) {
         copyOnWrite();
-        instance.setPingBytes(value);
+        instance.setErrBytes(value);
         return this;
       }
 
       // @@protoc_insertion_point(builder_scope:raas.ServerOutput)
     }
     protected final Object dynamicMethod(
-        MethodToInvoke method,
+        com.google.protobuf.GeneratedMessageLite.MethodToInvoke method,
         Object arg0, Object arg1) {
       switch (method) {
         case NEW_MUTABLE_INSTANCE: {
-          return new ServerOutput();
+          return new com.github.xy02.raas.Data.ServerOutput();
         }
         case IS_INITIALIZED: {
           return DEFAULT_INSTANCE;
@@ -1408,39 +1526,46 @@ public final class Data {
         }
         case VISIT: {
           Visitor visitor = (Visitor) arg0;
-          ServerOutput other = (ServerOutput) arg1;
+          com.github.xy02.raas.Data.ServerOutput other = (com.github.xy02.raas.Data.ServerOutput) arg1;
           sessionId_ = visitor.visitLong(sessionId_ != 0L, sessionId_,
               other.sessionId_ != 0L, other.sessionId_);
-          switch (other.getTypeCase()) {
+          serverOutputSequence_ = visitor.visitLong(serverOutputSequence_ != 0L, serverOutputSequence_,
+              other.serverOutputSequence_ != 0L, other.serverOutputSequence_);
+          switch (other.getBodyCase()) {
             case SERVER_ID: {
-              type_ = visitor.visitOneofString(
-                 typeCase_ == 2, type_, other.type_);
+              body_ = visitor.visitOneofString(
+                 bodyCase_ == 6, body_, other.body_);
               break;
             }
             case BIN: {
-              type_ = visitor.visitOneofByteString(
-                  typeCase_ == 3, type_, other.type_);
-              break;
-            }
-            case FINAL: {
-              type_ = visitor.visitOneofString(
-                 typeCase_ == 4, type_, other.type_);
+              body_ = visitor.visitOneofByteString(
+                  bodyCase_ == 7, body_, other.body_);
               break;
             }
             case PING: {
-              type_ = visitor.visitOneofString(
-                 typeCase_ == 5, type_, other.type_);
+              body_ = visitor.visitOneofByteString(
+                  bodyCase_ == 8, body_, other.body_);
               break;
             }
-            case TYPE_NOT_SET: {
-              visitor.visitOneofNotSet(typeCase_ != 0);
+            case END: {
+              body_ = visitor.visitOneofByteString(
+                  bodyCase_ == 9, body_, other.body_);
+              break;
+            }
+            case ERR: {
+              body_ = visitor.visitOneofString(
+                 bodyCase_ == 10, body_, other.body_);
+              break;
+            }
+            case BODY_NOT_SET: {
+              visitor.visitOneofNotSet(bodyCase_ != 0);
               break;
             }
           }
-          if (visitor == MergeFromVisitor
+          if (visitor == com.google.protobuf.GeneratedMessageLite.MergeFromVisitor
               .INSTANCE) {
-            if (other.typeCase_ != 0) {
-              typeCase_ = other.typeCase_;
+            if (other.bodyCase_ != 0) {
+              bodyCase_ = other.bodyCase_;
             }
           }
           return this;
@@ -1469,27 +1594,36 @@ public final class Data {
                   sessionId_ = input.readInt64();
                   break;
                 }
-                case 18: {
-                  String s = input.readStringRequireUtf8();
-                  typeCase_ = 2;
-                  type_ = s;
+                case 16: {
+
+                  serverOutputSequence_ = input.readInt64();
                   break;
                 }
-                case 26: {
-                  typeCase_ = 3;
-                  type_ = input.readBytes();
+                case 50: {
+                  String s = input.readStringRequireUtf8();
+                  bodyCase_ = 6;
+                  body_ = s;
                   break;
                 }
-                case 34: {
-                  String s = input.readStringRequireUtf8();
-                  typeCase_ = 4;
-                  type_ = s;
+                case 58: {
+                  bodyCase_ = 7;
+                  body_ = input.readBytes();
                   break;
                 }
-                case 42: {
+                case 66: {
+                  bodyCase_ = 8;
+                  body_ = input.readBytes();
+                  break;
+                }
+                case 74: {
+                  bodyCase_ = 9;
+                  body_ = input.readBytes();
+                  break;
+                }
+                case 82: {
                   String s = input.readStringRequireUtf8();
-                  typeCase_ = 5;
-                  type_ = s;
+                  bodyCase_ = 10;
+                  body_ = s;
                   break;
                 }
               }
@@ -1507,7 +1641,7 @@ public final class Data {
           return DEFAULT_INSTANCE;
         }
         case GET_PARSER: {
-          if (PARSER == null) {    synchronized (ServerOutput.class) {
+          if (PARSER == null) {    synchronized (com.github.xy02.raas.Data.ServerOutput.class) {
               if (PARSER == null) {
                 PARSER = new DefaultInstanceBasedParser(DEFAULT_INSTANCE);
               }
@@ -1521,13 +1655,13 @@ public final class Data {
 
 
     // @@protoc_insertion_point(class_scope:raas.ServerOutput)
-    private static final ServerOutput DEFAULT_INSTANCE;
+    private static final com.github.xy02.raas.Data.ServerOutput DEFAULT_INSTANCE;
     static {
       DEFAULT_INSTANCE = new ServerOutput();
       DEFAULT_INSTANCE.makeImmutable();
     }
 
-    public static ServerOutput getDefaultInstance() {
+    public static com.github.xy02.raas.Data.ServerOutput getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -1553,41 +1687,59 @@ public final class Data {
 
     /**
      * <pre>
-     *cancel request
+     *sequence number start from 1
      * </pre>
      *
-     * <code>optional string cancel = 2;</code>
+     * <code>optional int64 client_output_sequence = 2;</code>
      */
-    String getCancel();
+    long getClientOutputSequence();
+
+    /**
+     * <pre>
+     *raw binary data
+     * </pre>
+     *
+     * <code>optional bytes bin = 7;</code>
+     */
+    com.google.protobuf.ByteString getBin();
+
+    /**
+     * <pre>
+     *client output PONG message when it get PING
+     * </pre>
+     *
+     * <code>optional bytes pong = 8;</code>
+     */
+    com.google.protobuf.ByteString getPong();
+
+    /**
+     * <pre>
+     *end with final binary data, nullable
+     * </pre>
+     *
+     * <code>optional bytes end = 9;</code>
+     */
+    com.google.protobuf.ByteString getEnd();
+
     /**
      * <pre>
      *cancel request
      * </pre>
      *
-     * <code>optional string cancel = 2;</code>
+     * <code>optional string cancel = 10;</code>
+     */
+    java.lang.String getCancel();
+    /**
+     * <pre>
+     *cancel request
+     * </pre>
+     *
+     * <code>optional string cancel = 10;</code>
      */
     com.google.protobuf.ByteString
         getCancelBytes();
 
-    /**
-     * <pre>
-     *client output PONG message when it get PING
-     * </pre>
-     *
-     * <code>optional string pong = 3;</code>
-     */
-    String getPong();
-    /**
-     * <pre>
-     *client output PONG message when it get PING
-     * </pre>
-     *
-     * <code>optional string pong = 3;</code>
-     */
-    com.google.protobuf.ByteString
-        getPongBytes();
-
-    public ClientOutput.TypeCase getTypeCase();
+    public com.github.xy02.raas.Data.ClientOutput.BodyCase getBodyCase();
   }
   /**
    * Protobuf type {@code raas.ClientOutput}
@@ -1599,30 +1751,34 @@ public final class Data {
       ClientOutputOrBuilder {
     private ClientOutput() {
     }
-    private int typeCase_ = 0;
-    private Object type_;
-    public enum TypeCase
+    private int bodyCase_ = 0;
+    private java.lang.Object body_;
+    public enum BodyCase
         implements com.google.protobuf.Internal.EnumLite {
-      CANCEL(2),
-      PONG(3),
-      TYPE_NOT_SET(0);
+      BIN(7),
+      PONG(8),
+      END(9),
+      CANCEL(10),
+      BODY_NOT_SET(0);
       private final int value;
-      private TypeCase(int value) {
+      private BodyCase(int value) {
         this.value = value;
       }
       /**
        * @deprecated Use {@link #forNumber(int)} instead.
        */
-      @Deprecated
-      public static TypeCase valueOf(int value) {
+      @java.lang.Deprecated
+      public static BodyCase valueOf(int value) {
         return forNumber(value);
       }
 
-      public static TypeCase forNumber(int value) {
+      public static BodyCase forNumber(int value) {
         switch (value) {
-          case 2: return CANCEL;
-          case 3: return PONG;
-          case 0: return TYPE_NOT_SET;
+          case 7: return BIN;
+          case 8: return PONG;
+          case 9: return END;
+          case 10: return CANCEL;
+          case 0: return BODY_NOT_SET;
           default: return null;
         }
       }
@@ -1631,15 +1787,15 @@ public final class Data {
       }
     };
 
-    public TypeCase
-    getTypeCase() {
-      return TypeCase.forNumber(
-          typeCase_);
+    public BodyCase
+    getBodyCase() {
+      return BodyCase.forNumber(
+          bodyCase_);
     }
 
-    private void clearType() {
-      typeCase_ = 0;
-      type_ = null;
+    private void clearBody() {
+      bodyCase_ = 0;
+      body_ = null;
     }
 
     public static final int SESSION_ID_FIELD_NUMBER = 1;
@@ -1677,18 +1833,179 @@ public final class Data {
       sessionId_ = 0L;
     }
 
-    public static final int CANCEL_FIELD_NUMBER = 2;
+    public static final int CLIENT_OUTPUT_SEQUENCE_FIELD_NUMBER = 2;
+    private long clientOutputSequence_;
+    /**
+     * <pre>
+     *sequence number start from 1
+     * </pre>
+     *
+     * <code>optional int64 client_output_sequence = 2;</code>
+     */
+    public long getClientOutputSequence() {
+      return clientOutputSequence_;
+    }
+    /**
+     * <pre>
+     *sequence number start from 1
+     * </pre>
+     *
+     * <code>optional int64 client_output_sequence = 2;</code>
+     */
+    private void setClientOutputSequence(long value) {
+      
+      clientOutputSequence_ = value;
+    }
+    /**
+     * <pre>
+     *sequence number start from 1
+     * </pre>
+     *
+     * <code>optional int64 client_output_sequence = 2;</code>
+     */
+    private void clearClientOutputSequence() {
+      
+      clientOutputSequence_ = 0L;
+    }
+
+    public static final int BIN_FIELD_NUMBER = 7;
+    /**
+     * <pre>
+     *raw binary data
+     * </pre>
+     *
+     * <code>optional bytes bin = 7;</code>
+     */
+    public com.google.protobuf.ByteString getBin() {
+      if (bodyCase_ == 7) {
+        return (com.google.protobuf.ByteString) body_;
+      }
+      return com.google.protobuf.ByteString.EMPTY;
+    }
+    /**
+     * <pre>
+     *raw binary data
+     * </pre>
+     *
+     * <code>optional bytes bin = 7;</code>
+     */
+    private void setBin(com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  bodyCase_ = 7;
+      body_ = value;
+    }
+    /**
+     * <pre>
+     *raw binary data
+     * </pre>
+     *
+     * <code>optional bytes bin = 7;</code>
+     */
+    private void clearBin() {
+      if (bodyCase_ == 7) {
+        bodyCase_ = 0;
+        body_ = null;
+      }
+    }
+
+    public static final int PONG_FIELD_NUMBER = 8;
+    /**
+     * <pre>
+     *client output PONG message when it get PING
+     * </pre>
+     *
+     * <code>optional bytes pong = 8;</code>
+     */
+    public com.google.protobuf.ByteString getPong() {
+      if (bodyCase_ == 8) {
+        return (com.google.protobuf.ByteString) body_;
+      }
+      return com.google.protobuf.ByteString.EMPTY;
+    }
+    /**
+     * <pre>
+     *client output PONG message when it get PING
+     * </pre>
+     *
+     * <code>optional bytes pong = 8;</code>
+     */
+    private void setPong(com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  bodyCase_ = 8;
+      body_ = value;
+    }
+    /**
+     * <pre>
+     *client output PONG message when it get PING
+     * </pre>
+     *
+     * <code>optional bytes pong = 8;</code>
+     */
+    private void clearPong() {
+      if (bodyCase_ == 8) {
+        bodyCase_ = 0;
+        body_ = null;
+      }
+    }
+
+    public static final int END_FIELD_NUMBER = 9;
+    /**
+     * <pre>
+     *end with final binary data, nullable
+     * </pre>
+     *
+     * <code>optional bytes end = 9;</code>
+     */
+    public com.google.protobuf.ByteString getEnd() {
+      if (bodyCase_ == 9) {
+        return (com.google.protobuf.ByteString) body_;
+      }
+      return com.google.protobuf.ByteString.EMPTY;
+    }
+    /**
+     * <pre>
+     *end with final binary data, nullable
+     * </pre>
+     *
+     * <code>optional bytes end = 9;</code>
+     */
+    private void setEnd(com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  bodyCase_ = 9;
+      body_ = value;
+    }
+    /**
+     * <pre>
+     *end with final binary data, nullable
+     * </pre>
+     *
+     * <code>optional bytes end = 9;</code>
+     */
+    private void clearEnd() {
+      if (bodyCase_ == 9) {
+        bodyCase_ = 0;
+        body_ = null;
+      }
+    }
+
+    public static final int CANCEL_FIELD_NUMBER = 10;
     /**
      * <pre>
      *cancel request
      * </pre>
      *
-     * <code>optional string cancel = 2;</code>
+     * <code>optional string cancel = 10;</code>
      */
-    public String getCancel() {
-      String ref = "";
-      if (typeCase_ == 2) {
-        ref = (String) type_;
+    public java.lang.String getCancel() {
+      java.lang.String ref = "";
+      if (bodyCase_ == 10) {
+        ref = (java.lang.String) body_;
       }
       return ref;
     }
@@ -1697,13 +2014,13 @@ public final class Data {
      *cancel request
      * </pre>
      *
-     * <code>optional string cancel = 2;</code>
+     * <code>optional string cancel = 10;</code>
      */
     public com.google.protobuf.ByteString
         getCancelBytes() {
-      String ref = "";
-      if (typeCase_ == 2) {
-        ref = (String) type_;
+      java.lang.String ref = "";
+      if (bodyCase_ == 10) {
+        ref = (java.lang.String) body_;
       }
       return com.google.protobuf.ByteString.copyFromUtf8(ref);
     }
@@ -1712,27 +2029,27 @@ public final class Data {
      *cancel request
      * </pre>
      *
-     * <code>optional string cancel = 2;</code>
+     * <code>optional string cancel = 10;</code>
      */
     private void setCancel(
-        String value) {
+        java.lang.String value) {
       if (value == null) {
     throw new NullPointerException();
   }
-  typeCase_ = 2;
-      type_ = value;
+  bodyCase_ = 10;
+      body_ = value;
     }
     /**
      * <pre>
      *cancel request
      * </pre>
      *
-     * <code>optional string cancel = 2;</code>
+     * <code>optional string cancel = 10;</code>
      */
     private void clearCancel() {
-      if (typeCase_ == 2) {
-        typeCase_ = 0;
-        type_ = null;
+      if (bodyCase_ == 10) {
+        bodyCase_ = 0;
+        body_ = null;
       }
     }
     /**
@@ -1740,7 +2057,7 @@ public final class Data {
      *cancel request
      * </pre>
      *
-     * <code>optional string cancel = 2;</code>
+     * <code>optional string cancel = 10;</code>
      */
     private void setCancelBytes(
         com.google.protobuf.ByteString value) {
@@ -1748,83 +2065,8 @@ public final class Data {
     throw new NullPointerException();
   }
   checkByteStringIsUtf8(value);
-      typeCase_ = 2;
-      type_ = value.toStringUtf8();
-    }
-
-    public static final int PONG_FIELD_NUMBER = 3;
-    /**
-     * <pre>
-     *client output PONG message when it get PING
-     * </pre>
-     *
-     * <code>optional string pong = 3;</code>
-     */
-    public String getPong() {
-      String ref = "";
-      if (typeCase_ == 3) {
-        ref = (String) type_;
-      }
-      return ref;
-    }
-    /**
-     * <pre>
-     *client output PONG message when it get PING
-     * </pre>
-     *
-     * <code>optional string pong = 3;</code>
-     */
-    public com.google.protobuf.ByteString
-        getPongBytes() {
-      String ref = "";
-      if (typeCase_ == 3) {
-        ref = (String) type_;
-      }
-      return com.google.protobuf.ByteString.copyFromUtf8(ref);
-    }
-    /**
-     * <pre>
-     *client output PONG message when it get PING
-     * </pre>
-     *
-     * <code>optional string pong = 3;</code>
-     */
-    private void setPong(
-        String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  typeCase_ = 3;
-      type_ = value;
-    }
-    /**
-     * <pre>
-     *client output PONG message when it get PING
-     * </pre>
-     *
-     * <code>optional string pong = 3;</code>
-     */
-    private void clearPong() {
-      if (typeCase_ == 3) {
-        typeCase_ = 0;
-        type_ = null;
-      }
-    }
-    /**
-     * <pre>
-     *client output PONG message when it get PING
-     * </pre>
-     *
-     * <code>optional string pong = 3;</code>
-     */
-    private void setPongBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      typeCase_ = 3;
-      type_ = value.toStringUtf8();
+      bodyCase_ = 10;
+      body_ = value.toStringUtf8();
     }
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
@@ -1832,11 +2074,23 @@ public final class Data {
       if (sessionId_ != 0L) {
         output.writeInt64(1, sessionId_);
       }
-      if (typeCase_ == 2) {
-        output.writeString(2, getCancel());
+      if (clientOutputSequence_ != 0L) {
+        output.writeInt64(2, clientOutputSequence_);
       }
-      if (typeCase_ == 3) {
-        output.writeString(3, getPong());
+      if (bodyCase_ == 7) {
+        output.writeBytes(
+            7, (com.google.protobuf.ByteString)((com.google.protobuf.ByteString) body_));
+      }
+      if (bodyCase_ == 8) {
+        output.writeBytes(
+            8, (com.google.protobuf.ByteString)((com.google.protobuf.ByteString) body_));
+      }
+      if (bodyCase_ == 9) {
+        output.writeBytes(
+            9, (com.google.protobuf.ByteString)((com.google.protobuf.ByteString) body_));
+      }
+      if (bodyCase_ == 10) {
+        output.writeString(10, getCancel());
       }
     }
 
@@ -1849,72 +2103,87 @@ public final class Data {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(1, sessionId_);
       }
-      if (typeCase_ == 2) {
+      if (clientOutputSequence_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeStringSize(2, getCancel());
+          .computeInt64Size(2, clientOutputSequence_);
       }
-      if (typeCase_ == 3) {
+      if (bodyCase_ == 7) {
         size += com.google.protobuf.CodedOutputStream
-          .computeStringSize(3, getPong());
+          .computeBytesSize(
+              7, (com.google.protobuf.ByteString)((com.google.protobuf.ByteString) body_));
+      }
+      if (bodyCase_ == 8) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(
+              8, (com.google.protobuf.ByteString)((com.google.protobuf.ByteString) body_));
+      }
+      if (bodyCase_ == 9) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(
+              9, (com.google.protobuf.ByteString)((com.google.protobuf.ByteString) body_));
+      }
+      if (bodyCase_ == 10) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeStringSize(10, getCancel());
       }
       memoizedSerializedSize = size;
       return size;
     }
 
-    public static ClientOutput parseFrom(
+    public static com.github.xy02.raas.Data.ClientOutput parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return com.google.protobuf.GeneratedMessageLite.parseFrom(
           DEFAULT_INSTANCE, data);
     }
-    public static ClientOutput parseFrom(
+    public static com.github.xy02.raas.Data.ClientOutput parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return com.google.protobuf.GeneratedMessageLite.parseFrom(
           DEFAULT_INSTANCE, data, extensionRegistry);
     }
-    public static ClientOutput parseFrom(byte[] data)
+    public static com.github.xy02.raas.Data.ClientOutput parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return com.google.protobuf.GeneratedMessageLite.parseFrom(
           DEFAULT_INSTANCE, data);
     }
-    public static ClientOutput parseFrom(
+    public static com.github.xy02.raas.Data.ClientOutput parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return com.google.protobuf.GeneratedMessageLite.parseFrom(
           DEFAULT_INSTANCE, data, extensionRegistry);
     }
-    public static ClientOutput parseFrom(java.io.InputStream input)
+    public static com.github.xy02.raas.Data.ClientOutput parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageLite.parseFrom(
           DEFAULT_INSTANCE, input);
     }
-    public static ClientOutput parseFrom(
+    public static com.github.xy02.raas.Data.ClientOutput parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageLite.parseFrom(
           DEFAULT_INSTANCE, input, extensionRegistry);
     }
-    public static ClientOutput parseDelimitedFrom(java.io.InputStream input)
+    public static com.github.xy02.raas.Data.ClientOutput parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return parseDelimitedFrom(DEFAULT_INSTANCE, input);
     }
-    public static ClientOutput parseDelimitedFrom(
+    public static com.github.xy02.raas.Data.ClientOutput parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return parseDelimitedFrom(DEFAULT_INSTANCE, input, extensionRegistry);
     }
-    public static ClientOutput parseFrom(
+    public static com.github.xy02.raas.Data.ClientOutput parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageLite.parseFrom(
           DEFAULT_INSTANCE, input);
     }
-    public static ClientOutput parseFrom(
+    public static com.github.xy02.raas.Data.ClientOutput parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -1925,7 +2194,7 @@ public final class Data {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(ClientOutput prototype) {
+    public static Builder newBuilder(com.github.xy02.raas.Data.ClientOutput prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
 
@@ -1934,22 +2203,22 @@ public final class Data {
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageLite.Builder<
-          ClientOutput, Builder> implements
+          com.github.xy02.raas.Data.ClientOutput, Builder> implements
         // @@protoc_insertion_point(builder_implements:raas.ClientOutput)
-        ClientOutputOrBuilder {
+        com.github.xy02.raas.Data.ClientOutputOrBuilder {
       // Construct using com.github.xy02.raas.Data.ClientOutput.newBuilder()
       private Builder() {
         super(DEFAULT_INSTANCE);
       }
 
-      public TypeCase
-          getTypeCase() {
-        return instance.getTypeCase();
+      public BodyCase
+          getBodyCase() {
+        return instance.getBodyCase();
       }
 
-      public Builder clearType() {
+      public Builder clearBody() {
         copyOnWrite();
-        instance.clearType();
+        instance.clearBody();
         return this;
       }
 
@@ -1991,12 +2260,152 @@ public final class Data {
 
       /**
        * <pre>
+       *sequence number start from 1
+       * </pre>
+       *
+       * <code>optional int64 client_output_sequence = 2;</code>
+       */
+      public long getClientOutputSequence() {
+        return instance.getClientOutputSequence();
+      }
+      /**
+       * <pre>
+       *sequence number start from 1
+       * </pre>
+       *
+       * <code>optional int64 client_output_sequence = 2;</code>
+       */
+      public Builder setClientOutputSequence(long value) {
+        copyOnWrite();
+        instance.setClientOutputSequence(value);
+        return this;
+      }
+      /**
+       * <pre>
+       *sequence number start from 1
+       * </pre>
+       *
+       * <code>optional int64 client_output_sequence = 2;</code>
+       */
+      public Builder clearClientOutputSequence() {
+        copyOnWrite();
+        instance.clearClientOutputSequence();
+        return this;
+      }
+
+      /**
+       * <pre>
+       *raw binary data
+       * </pre>
+       *
+       * <code>optional bytes bin = 7;</code>
+       */
+      public com.google.protobuf.ByteString getBin() {
+        return instance.getBin();
+      }
+      /**
+       * <pre>
+       *raw binary data
+       * </pre>
+       *
+       * <code>optional bytes bin = 7;</code>
+       */
+      public Builder setBin(com.google.protobuf.ByteString value) {
+        copyOnWrite();
+        instance.setBin(value);
+        return this;
+      }
+      /**
+       * <pre>
+       *raw binary data
+       * </pre>
+       *
+       * <code>optional bytes bin = 7;</code>
+       */
+      public Builder clearBin() {
+        copyOnWrite();
+        instance.clearBin();
+        return this;
+      }
+
+      /**
+       * <pre>
+       *client output PONG message when it get PING
+       * </pre>
+       *
+       * <code>optional bytes pong = 8;</code>
+       */
+      public com.google.protobuf.ByteString getPong() {
+        return instance.getPong();
+      }
+      /**
+       * <pre>
+       *client output PONG message when it get PING
+       * </pre>
+       *
+       * <code>optional bytes pong = 8;</code>
+       */
+      public Builder setPong(com.google.protobuf.ByteString value) {
+        copyOnWrite();
+        instance.setPong(value);
+        return this;
+      }
+      /**
+       * <pre>
+       *client output PONG message when it get PING
+       * </pre>
+       *
+       * <code>optional bytes pong = 8;</code>
+       */
+      public Builder clearPong() {
+        copyOnWrite();
+        instance.clearPong();
+        return this;
+      }
+
+      /**
+       * <pre>
+       *end with final binary data, nullable
+       * </pre>
+       *
+       * <code>optional bytes end = 9;</code>
+       */
+      public com.google.protobuf.ByteString getEnd() {
+        return instance.getEnd();
+      }
+      /**
+       * <pre>
+       *end with final binary data, nullable
+       * </pre>
+       *
+       * <code>optional bytes end = 9;</code>
+       */
+      public Builder setEnd(com.google.protobuf.ByteString value) {
+        copyOnWrite();
+        instance.setEnd(value);
+        return this;
+      }
+      /**
+       * <pre>
+       *end with final binary data, nullable
+       * </pre>
+       *
+       * <code>optional bytes end = 9;</code>
+       */
+      public Builder clearEnd() {
+        copyOnWrite();
+        instance.clearEnd();
+        return this;
+      }
+
+      /**
+       * <pre>
        *cancel request
        * </pre>
        *
-       * <code>optional string cancel = 2;</code>
+       * <code>optional string cancel = 10;</code>
        */
-      public String getCancel() {
+      public java.lang.String getCancel() {
         return instance.getCancel();
       }
       /**
@@ -2004,7 +2413,7 @@ public final class Data {
        *cancel request
        * </pre>
        *
-       * <code>optional string cancel = 2;</code>
+       * <code>optional string cancel = 10;</code>
        */
       public com.google.protobuf.ByteString
           getCancelBytes() {
@@ -2015,10 +2424,10 @@ public final class Data {
        *cancel request
        * </pre>
        *
-       * <code>optional string cancel = 2;</code>
+       * <code>optional string cancel = 10;</code>
        */
       public Builder setCancel(
-          String value) {
+          java.lang.String value) {
         copyOnWrite();
         instance.setCancel(value);
         return this;
@@ -2028,7 +2437,7 @@ public final class Data {
        *cancel request
        * </pre>
        *
-       * <code>optional string cancel = 2;</code>
+       * <code>optional string cancel = 10;</code>
        */
       public Builder clearCancel() {
         copyOnWrite();
@@ -2040,7 +2449,7 @@ public final class Data {
        *cancel request
        * </pre>
        *
-       * <code>optional string cancel = 2;</code>
+       * <code>optional string cancel = 10;</code>
        */
       public Builder setCancelBytes(
           com.google.protobuf.ByteString value) {
@@ -2049,74 +2458,14 @@ public final class Data {
         return this;
       }
 
-      /**
-       * <pre>
-       *client output PONG message when it get PING
-       * </pre>
-       *
-       * <code>optional string pong = 3;</code>
-       */
-      public String getPong() {
-        return instance.getPong();
-      }
-      /**
-       * <pre>
-       *client output PONG message when it get PING
-       * </pre>
-       *
-       * <code>optional string pong = 3;</code>
-       */
-      public com.google.protobuf.ByteString
-          getPongBytes() {
-        return instance.getPongBytes();
-      }
-      /**
-       * <pre>
-       *client output PONG message when it get PING
-       * </pre>
-       *
-       * <code>optional string pong = 3;</code>
-       */
-      public Builder setPong(
-          String value) {
-        copyOnWrite();
-        instance.setPong(value);
-        return this;
-      }
-      /**
-       * <pre>
-       *client output PONG message when it get PING
-       * </pre>
-       *
-       * <code>optional string pong = 3;</code>
-       */
-      public Builder clearPong() {
-        copyOnWrite();
-        instance.clearPong();
-        return this;
-      }
-      /**
-       * <pre>
-       *client output PONG message when it get PING
-       * </pre>
-       *
-       * <code>optional string pong = 3;</code>
-       */
-      public Builder setPongBytes(
-          com.google.protobuf.ByteString value) {
-        copyOnWrite();
-        instance.setPongBytes(value);
-        return this;
-      }
-
       // @@protoc_insertion_point(builder_scope:raas.ClientOutput)
     }
     protected final Object dynamicMethod(
-        MethodToInvoke method,
+        com.google.protobuf.GeneratedMessageLite.MethodToInvoke method,
         Object arg0, Object arg1) {
       switch (method) {
         case NEW_MUTABLE_INSTANCE: {
-          return new ClientOutput();
+          return new com.github.xy02.raas.Data.ClientOutput();
         }
         case IS_INITIALIZED: {
           return DEFAULT_INSTANCE;
@@ -2129,29 +2478,41 @@ public final class Data {
         }
         case VISIT: {
           Visitor visitor = (Visitor) arg0;
-          ClientOutput other = (ClientOutput) arg1;
+          com.github.xy02.raas.Data.ClientOutput other = (com.github.xy02.raas.Data.ClientOutput) arg1;
           sessionId_ = visitor.visitLong(sessionId_ != 0L, sessionId_,
               other.sessionId_ != 0L, other.sessionId_);
-          switch (other.getTypeCase()) {
-            case CANCEL: {
-              type_ = visitor.visitOneofString(
-                 typeCase_ == 2, type_, other.type_);
+          clientOutputSequence_ = visitor.visitLong(clientOutputSequence_ != 0L, clientOutputSequence_,
+              other.clientOutputSequence_ != 0L, other.clientOutputSequence_);
+          switch (other.getBodyCase()) {
+            case BIN: {
+              body_ = visitor.visitOneofByteString(
+                  bodyCase_ == 7, body_, other.body_);
               break;
             }
             case PONG: {
-              type_ = visitor.visitOneofString(
-                 typeCase_ == 3, type_, other.type_);
+              body_ = visitor.visitOneofByteString(
+                  bodyCase_ == 8, body_, other.body_);
               break;
             }
-            case TYPE_NOT_SET: {
-              visitor.visitOneofNotSet(typeCase_ != 0);
+            case END: {
+              body_ = visitor.visitOneofByteString(
+                  bodyCase_ == 9, body_, other.body_);
+              break;
+            }
+            case CANCEL: {
+              body_ = visitor.visitOneofString(
+                 bodyCase_ == 10, body_, other.body_);
+              break;
+            }
+            case BODY_NOT_SET: {
+              visitor.visitOneofNotSet(bodyCase_ != 0);
               break;
             }
           }
-          if (visitor == MergeFromVisitor
+          if (visitor == com.google.protobuf.GeneratedMessageLite.MergeFromVisitor
               .INSTANCE) {
-            if (other.typeCase_ != 0) {
-              typeCase_ = other.typeCase_;
+            if (other.bodyCase_ != 0) {
+              bodyCase_ = other.bodyCase_;
             }
           }
           return this;
@@ -2180,16 +2541,30 @@ public final class Data {
                   sessionId_ = input.readInt64();
                   break;
                 }
-                case 18: {
-                  String s = input.readStringRequireUtf8();
-                  typeCase_ = 2;
-                  type_ = s;
+                case 16: {
+
+                  clientOutputSequence_ = input.readInt64();
                   break;
                 }
-                case 26: {
+                case 58: {
+                  bodyCase_ = 7;
+                  body_ = input.readBytes();
+                  break;
+                }
+                case 66: {
+                  bodyCase_ = 8;
+                  body_ = input.readBytes();
+                  break;
+                }
+                case 74: {
+                  bodyCase_ = 9;
+                  body_ = input.readBytes();
+                  break;
+                }
+                case 82: {
                   String s = input.readStringRequireUtf8();
-                  typeCase_ = 3;
-                  type_ = s;
+                  bodyCase_ = 10;
+                  body_ = s;
                   break;
                 }
               }
@@ -2207,7 +2582,7 @@ public final class Data {
           return DEFAULT_INSTANCE;
         }
         case GET_PARSER: {
-          if (PARSER == null) {    synchronized (ClientOutput.class) {
+          if (PARSER == null) {    synchronized (com.github.xy02.raas.Data.ClientOutput.class) {
               if (PARSER == null) {
                 PARSER = new DefaultInstanceBasedParser(DEFAULT_INSTANCE);
               }
@@ -2221,13 +2596,13 @@ public final class Data {
 
 
     // @@protoc_insertion_point(class_scope:raas.ClientOutput)
-    private static final ClientOutput DEFAULT_INSTANCE;
+    private static final com.github.xy02.raas.Data.ClientOutput DEFAULT_INSTANCE;
     static {
       DEFAULT_INSTANCE = new ClientOutput();
       DEFAULT_INSTANCE.makeImmutable();
     }
 
-    public static ClientOutput getDefaultInstance() {
+    public static com.github.xy02.raas.Data.ClientOutput getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 

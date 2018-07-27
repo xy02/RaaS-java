@@ -15,7 +15,7 @@ public class Client {
             //call service
             RaaSNode node = new NatsNode();
             byte[] buf = "hello".getBytes();
-            Disposable d2 = node.callService("test.s1", buf)
+            Disposable d2 = node.callService("test.s1", buf, null)
                     .doOnNext(x -> read++)
                     .map(x -> new String(x))
                     .doOnNext(System.out::println)

@@ -19,25 +19,37 @@ message Request {
 message ServerOutput {
     //session id
     int64 session_id = 1;
-    oneof type {
-        //server id
-        string server_id = 2;
+    //sequence number start from 1
+    int64 server_output_sequence = 2;
+    //main body
+    oneof body {
+        //server id,  server only need to send it once. if client request with output, server should send it immediately
+        string server_id = 6;
         //raw binary data
-        bytes bin = 3;
-        //""(empty string) means complete, "err message"(not empty) means error
-        string final = 4;
+        bytes bin = 7;
         //PING
-        string ping = 5;
+        bytes ping = 8;
+        //end with final binary data, nullable
+        bytes end = 9;
+        //end with error message
+        string err = 10;
     }
 }
 
 message ClientOutput {
     //session id
     int64 session_id = 1;
-    oneof type{
-        //cancel request
-        string cancel = 2;
+    //sequence number start from 1
+    int64 client_output_sequence = 2;
+    //main body
+    oneof body{
+        //raw binary data
+        bytes bin = 7;
         //client output PONG message when it get PING
-        string pong = 3;
+        bytes pong = 8;
+        //end with final binary data, nullable
+        bytes end = 9;
+        //cancel request
+        string cancel = 10;
     }
 }
