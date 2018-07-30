@@ -17,9 +17,18 @@ public final class Data {
      *session id
      * </pre>
      *
-     * <code>optional int64 session_id = 1;</code>
+     * <code>optional string session_id = 1;</code>
      */
-    long getSessionId();
+    java.lang.String getSessionId();
+    /**
+     * <pre>
+     *session id
+     * </pre>
+     *
+     * <code>optional string session_id = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getSessionIdBytes();
 
     /**
      * <pre>
@@ -57,19 +66,20 @@ public final class Data {
       // @@protoc_insertion_point(message_implements:raas.Request)
       RequestOrBuilder {
     private Request() {
+      sessionId_ = "";
       clientId_ = "";
       bin_ = com.google.protobuf.ByteString.EMPTY;
     }
     public static final int SESSION_ID_FIELD_NUMBER = 1;
-    private long sessionId_;
+    private java.lang.String sessionId_;
     /**
      * <pre>
      *session id
      * </pre>
      *
-     * <code>optional int64 session_id = 1;</code>
+     * <code>optional string session_id = 1;</code>
      */
-    public long getSessionId() {
+    public java.lang.String getSessionId() {
       return sessionId_;
     }
     /**
@@ -77,10 +87,25 @@ public final class Data {
      *session id
      * </pre>
      *
-     * <code>optional int64 session_id = 1;</code>
+     * <code>optional string session_id = 1;</code>
      */
-    private void setSessionId(long value) {
-      
+    public com.google.protobuf.ByteString
+        getSessionIdBytes() {
+      return com.google.protobuf.ByteString.copyFromUtf8(sessionId_);
+    }
+    /**
+     * <pre>
+     *session id
+     * </pre>
+     *
+     * <code>optional string session_id = 1;</code>
+     */
+    private void setSessionId(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
       sessionId_ = value;
     }
     /**
@@ -88,11 +113,27 @@ public final class Data {
      *session id
      * </pre>
      *
-     * <code>optional int64 session_id = 1;</code>
+     * <code>optional string session_id = 1;</code>
      */
     private void clearSessionId() {
       
-      sessionId_ = 0L;
+      sessionId_ = getDefaultInstance().getSessionId();
+    }
+    /**
+     * <pre>
+     *session id
+     * </pre>
+     *
+     * <code>optional string session_id = 1;</code>
+     */
+    private void setSessionIdBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
+      sessionId_ = value.toStringUtf8();
     }
 
     public static final int CLIENT_ID_FIELD_NUMBER = 2;
@@ -201,8 +242,8 @@ public final class Data {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (sessionId_ != 0L) {
-        output.writeInt64(1, sessionId_);
+      if (!sessionId_.isEmpty()) {
+        output.writeString(1, getSessionId());
       }
       if (!clientId_.isEmpty()) {
         output.writeString(2, getClientId());
@@ -217,9 +258,9 @@ public final class Data {
       if (size != -1) return size;
 
       size = 0;
-      if (sessionId_ != 0L) {
+      if (!sessionId_.isEmpty()) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(1, sessionId_);
+          .computeStringSize(1, getSessionId());
       }
       if (!clientId_.isEmpty()) {
         size += com.google.protobuf.CodedOutputStream
@@ -320,9 +361,9 @@ public final class Data {
        *session id
        * </pre>
        *
-       * <code>optional int64 session_id = 1;</code>
+       * <code>optional string session_id = 1;</code>
        */
-      public long getSessionId() {
+      public java.lang.String getSessionId() {
         return instance.getSessionId();
       }
       /**
@@ -330,9 +371,21 @@ public final class Data {
        *session id
        * </pre>
        *
-       * <code>optional int64 session_id = 1;</code>
+       * <code>optional string session_id = 1;</code>
        */
-      public Builder setSessionId(long value) {
+      public com.google.protobuf.ByteString
+          getSessionIdBytes() {
+        return instance.getSessionIdBytes();
+      }
+      /**
+       * <pre>
+       *session id
+       * </pre>
+       *
+       * <code>optional string session_id = 1;</code>
+       */
+      public Builder setSessionId(
+          java.lang.String value) {
         copyOnWrite();
         instance.setSessionId(value);
         return this;
@@ -342,11 +395,24 @@ public final class Data {
        *session id
        * </pre>
        *
-       * <code>optional int64 session_id = 1;</code>
+       * <code>optional string session_id = 1;</code>
        */
       public Builder clearSessionId() {
         copyOnWrite();
         instance.clearSessionId();
+        return this;
+      }
+      /**
+       * <pre>
+       *session id
+       * </pre>
+       *
+       * <code>optional string session_id = 1;</code>
+       */
+      public Builder setSessionIdBytes(
+          com.google.protobuf.ByteString value) {
+        copyOnWrite();
+        instance.setSessionIdBytes(value);
         return this;
       }
 
@@ -466,8 +532,8 @@ public final class Data {
         case VISIT: {
           Visitor visitor = (Visitor) arg0;
           com.github.xy02.raas.Data.Request other = (com.github.xy02.raas.Data.Request) arg1;
-          sessionId_ = visitor.visitLong(sessionId_ != 0L, sessionId_,
-              other.sessionId_ != 0L, other.sessionId_);
+          sessionId_ = visitor.visitString(!sessionId_.isEmpty(), sessionId_,
+              !other.sessionId_.isEmpty(), other.sessionId_);
           clientId_ = visitor.visitString(!clientId_.isEmpty(), clientId_,
               !other.clientId_.isEmpty(), other.clientId_);
           bin_ = visitor.visitByteString(bin_ != com.google.protobuf.ByteString.EMPTY, bin_,
@@ -496,9 +562,10 @@ public final class Data {
                   }
                   break;
                 }
-                case 8: {
+                case 10: {
+                  String s = input.readStringRequireUtf8();
 
-                  sessionId_ = input.readInt64();
+                  sessionId_ = s;
                   break;
                 }
                 case 18: {
@@ -567,9 +634,18 @@ public final class Data {
      *session id
      * </pre>
      *
-     * <code>optional int64 session_id = 1;</code>
+     * <code>optional string session_id = 1;</code>
      */
-    long getSessionId();
+    java.lang.String getSessionId();
+    /**
+     * <pre>
+     *session id
+     * </pre>
+     *
+     * <code>optional string session_id = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getSessionIdBytes();
 
     /**
      * <pre>
@@ -654,6 +730,7 @@ public final class Data {
       // @@protoc_insertion_point(message_implements:raas.ServerOutput)
       ServerOutputOrBuilder {
     private ServerOutput() {
+      sessionId_ = "";
     }
     private int bodyCase_ = 0;
     private java.lang.Object body_;
@@ -705,15 +782,15 @@ public final class Data {
     }
 
     public static final int SESSION_ID_FIELD_NUMBER = 1;
-    private long sessionId_;
+    private java.lang.String sessionId_;
     /**
      * <pre>
      *session id
      * </pre>
      *
-     * <code>optional int64 session_id = 1;</code>
+     * <code>optional string session_id = 1;</code>
      */
-    public long getSessionId() {
+    public java.lang.String getSessionId() {
       return sessionId_;
     }
     /**
@@ -721,10 +798,25 @@ public final class Data {
      *session id
      * </pre>
      *
-     * <code>optional int64 session_id = 1;</code>
+     * <code>optional string session_id = 1;</code>
      */
-    private void setSessionId(long value) {
-      
+    public com.google.protobuf.ByteString
+        getSessionIdBytes() {
+      return com.google.protobuf.ByteString.copyFromUtf8(sessionId_);
+    }
+    /**
+     * <pre>
+     *session id
+     * </pre>
+     *
+     * <code>optional string session_id = 1;</code>
+     */
+    private void setSessionId(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
       sessionId_ = value;
     }
     /**
@@ -732,11 +824,27 @@ public final class Data {
      *session id
      * </pre>
      *
-     * <code>optional int64 session_id = 1;</code>
+     * <code>optional string session_id = 1;</code>
      */
     private void clearSessionId() {
       
-      sessionId_ = 0L;
+      sessionId_ = getDefaultInstance().getSessionId();
+    }
+    /**
+     * <pre>
+     *session id
+     * </pre>
+     *
+     * <code>optional string session_id = 1;</code>
+     */
+    private void setSessionIdBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
+      sessionId_ = value.toStringUtf8();
     }
 
     public static final int SERVER_OUTPUT_SEQUENCE_FIELD_NUMBER = 2;
@@ -1052,8 +1160,8 @@ public final class Data {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (sessionId_ != 0L) {
-        output.writeInt64(1, sessionId_);
+      if (!sessionId_.isEmpty()) {
+        output.writeString(1, getSessionId());
       }
       if (serverOutputSequence_ != 0L) {
         output.writeInt64(2, serverOutputSequence_);
@@ -1083,9 +1191,9 @@ public final class Data {
       if (size != -1) return size;
 
       size = 0;
-      if (sessionId_ != 0L) {
+      if (!sessionId_.isEmpty()) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(1, sessionId_);
+          .computeStringSize(1, getSessionId());
       }
       if (serverOutputSequence_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
@@ -1216,9 +1324,9 @@ public final class Data {
        *session id
        * </pre>
        *
-       * <code>optional int64 session_id = 1;</code>
+       * <code>optional string session_id = 1;</code>
        */
-      public long getSessionId() {
+      public java.lang.String getSessionId() {
         return instance.getSessionId();
       }
       /**
@@ -1226,9 +1334,21 @@ public final class Data {
        *session id
        * </pre>
        *
-       * <code>optional int64 session_id = 1;</code>
+       * <code>optional string session_id = 1;</code>
        */
-      public Builder setSessionId(long value) {
+      public com.google.protobuf.ByteString
+          getSessionIdBytes() {
+        return instance.getSessionIdBytes();
+      }
+      /**
+       * <pre>
+       *session id
+       * </pre>
+       *
+       * <code>optional string session_id = 1;</code>
+       */
+      public Builder setSessionId(
+          java.lang.String value) {
         copyOnWrite();
         instance.setSessionId(value);
         return this;
@@ -1238,11 +1358,24 @@ public final class Data {
        *session id
        * </pre>
        *
-       * <code>optional int64 session_id = 1;</code>
+       * <code>optional string session_id = 1;</code>
        */
       public Builder clearSessionId() {
         copyOnWrite();
         instance.clearSessionId();
+        return this;
+      }
+      /**
+       * <pre>
+       *session id
+       * </pre>
+       *
+       * <code>optional string session_id = 1;</code>
+       */
+      public Builder setSessionIdBytes(
+          com.google.protobuf.ByteString value) {
+        copyOnWrite();
+        instance.setSessionIdBytes(value);
         return this;
       }
 
@@ -1527,8 +1660,8 @@ public final class Data {
         case VISIT: {
           Visitor visitor = (Visitor) arg0;
           com.github.xy02.raas.Data.ServerOutput other = (com.github.xy02.raas.Data.ServerOutput) arg1;
-          sessionId_ = visitor.visitLong(sessionId_ != 0L, sessionId_,
-              other.sessionId_ != 0L, other.sessionId_);
+          sessionId_ = visitor.visitString(!sessionId_.isEmpty(), sessionId_,
+              !other.sessionId_.isEmpty(), other.sessionId_);
           serverOutputSequence_ = visitor.visitLong(serverOutputSequence_ != 0L, serverOutputSequence_,
               other.serverOutputSequence_ != 0L, other.serverOutputSequence_);
           switch (other.getBodyCase()) {
@@ -1589,9 +1722,10 @@ public final class Data {
                   }
                   break;
                 }
-                case 8: {
+                case 10: {
+                  String s = input.readStringRequireUtf8();
 
-                  sessionId_ = input.readInt64();
+                  sessionId_ = s;
                   break;
                 }
                 case 16: {
@@ -1681,9 +1815,18 @@ public final class Data {
      *session id
      * </pre>
      *
-     * <code>optional int64 session_id = 1;</code>
+     * <code>optional string session_id = 1;</code>
      */
-    long getSessionId();
+    java.lang.String getSessionId();
+    /**
+     * <pre>
+     *session id
+     * </pre>
+     *
+     * <code>optional string session_id = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getSessionIdBytes();
 
     /**
      * <pre>
@@ -1750,6 +1893,7 @@ public final class Data {
       // @@protoc_insertion_point(message_implements:raas.ClientOutput)
       ClientOutputOrBuilder {
     private ClientOutput() {
+      sessionId_ = "";
     }
     private int bodyCase_ = 0;
     private java.lang.Object body_;
@@ -1799,15 +1943,15 @@ public final class Data {
     }
 
     public static final int SESSION_ID_FIELD_NUMBER = 1;
-    private long sessionId_;
+    private java.lang.String sessionId_;
     /**
      * <pre>
      *session id
      * </pre>
      *
-     * <code>optional int64 session_id = 1;</code>
+     * <code>optional string session_id = 1;</code>
      */
-    public long getSessionId() {
+    public java.lang.String getSessionId() {
       return sessionId_;
     }
     /**
@@ -1815,10 +1959,25 @@ public final class Data {
      *session id
      * </pre>
      *
-     * <code>optional int64 session_id = 1;</code>
+     * <code>optional string session_id = 1;</code>
      */
-    private void setSessionId(long value) {
-      
+    public com.google.protobuf.ByteString
+        getSessionIdBytes() {
+      return com.google.protobuf.ByteString.copyFromUtf8(sessionId_);
+    }
+    /**
+     * <pre>
+     *session id
+     * </pre>
+     *
+     * <code>optional string session_id = 1;</code>
+     */
+    private void setSessionId(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
       sessionId_ = value;
     }
     /**
@@ -1826,11 +1985,27 @@ public final class Data {
      *session id
      * </pre>
      *
-     * <code>optional int64 session_id = 1;</code>
+     * <code>optional string session_id = 1;</code>
      */
     private void clearSessionId() {
       
-      sessionId_ = 0L;
+      sessionId_ = getDefaultInstance().getSessionId();
+    }
+    /**
+     * <pre>
+     *session id
+     * </pre>
+     *
+     * <code>optional string session_id = 1;</code>
+     */
+    private void setSessionIdBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
+      sessionId_ = value.toStringUtf8();
     }
 
     public static final int CLIENT_OUTPUT_SEQUENCE_FIELD_NUMBER = 2;
@@ -2071,8 +2246,8 @@ public final class Data {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (sessionId_ != 0L) {
-        output.writeInt64(1, sessionId_);
+      if (!sessionId_.isEmpty()) {
+        output.writeString(1, getSessionId());
       }
       if (clientOutputSequence_ != 0L) {
         output.writeInt64(2, clientOutputSequence_);
@@ -2099,9 +2274,9 @@ public final class Data {
       if (size != -1) return size;
 
       size = 0;
-      if (sessionId_ != 0L) {
+      if (!sessionId_.isEmpty()) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(1, sessionId_);
+          .computeStringSize(1, getSessionId());
       }
       if (clientOutputSequence_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
@@ -2228,9 +2403,9 @@ public final class Data {
        *session id
        * </pre>
        *
-       * <code>optional int64 session_id = 1;</code>
+       * <code>optional string session_id = 1;</code>
        */
-      public long getSessionId() {
+      public java.lang.String getSessionId() {
         return instance.getSessionId();
       }
       /**
@@ -2238,9 +2413,21 @@ public final class Data {
        *session id
        * </pre>
        *
-       * <code>optional int64 session_id = 1;</code>
+       * <code>optional string session_id = 1;</code>
        */
-      public Builder setSessionId(long value) {
+      public com.google.protobuf.ByteString
+          getSessionIdBytes() {
+        return instance.getSessionIdBytes();
+      }
+      /**
+       * <pre>
+       *session id
+       * </pre>
+       *
+       * <code>optional string session_id = 1;</code>
+       */
+      public Builder setSessionId(
+          java.lang.String value) {
         copyOnWrite();
         instance.setSessionId(value);
         return this;
@@ -2250,11 +2437,24 @@ public final class Data {
        *session id
        * </pre>
        *
-       * <code>optional int64 session_id = 1;</code>
+       * <code>optional string session_id = 1;</code>
        */
       public Builder clearSessionId() {
         copyOnWrite();
         instance.clearSessionId();
+        return this;
+      }
+      /**
+       * <pre>
+       *session id
+       * </pre>
+       *
+       * <code>optional string session_id = 1;</code>
+       */
+      public Builder setSessionIdBytes(
+          com.google.protobuf.ByteString value) {
+        copyOnWrite();
+        instance.setSessionIdBytes(value);
         return this;
       }
 
@@ -2479,8 +2679,8 @@ public final class Data {
         case VISIT: {
           Visitor visitor = (Visitor) arg0;
           com.github.xy02.raas.Data.ClientOutput other = (com.github.xy02.raas.Data.ClientOutput) arg1;
-          sessionId_ = visitor.visitLong(sessionId_ != 0L, sessionId_,
-              other.sessionId_ != 0L, other.sessionId_);
+          sessionId_ = visitor.visitString(!sessionId_.isEmpty(), sessionId_,
+              !other.sessionId_.isEmpty(), other.sessionId_);
           clientOutputSequence_ = visitor.visitLong(clientOutputSequence_ != 0L, clientOutputSequence_,
               other.clientOutputSequence_ != 0L, other.clientOutputSequence_);
           switch (other.getBodyCase()) {
@@ -2536,9 +2736,10 @@ public final class Data {
                   }
                   break;
                 }
-                case 8: {
+                case 10: {
+                  String s = input.readStringRequireUtf8();
 
-                  sessionId_ = input.readInt64();
+                  sessionId_ = s;
                   break;
                 }
                 case 16: {

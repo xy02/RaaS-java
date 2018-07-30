@@ -6,7 +6,6 @@ import com.github.xy02.raas.*;
 import com.google.protobuf.ByteString;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
 import io.reactivex.Observer;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
@@ -18,10 +17,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-import static com.github.xy02.raas.Data.ClientOutput.BodyCase.CANCEL;
-import static com.github.xy02.raas.Data.ClientOutput.BodyCase.END;
 
-public class Server {
+class Server {
 
     private IConnection conn;
 
@@ -31,8 +28,48 @@ public class Server {
 
     private ServiceClient client;
 
-    private Map<Long, ObservableEmitter<Data.ClientOutput>> emitterMap = new ConcurrentHashMap<>();
-    private Map<Long, Long> clientOutputSequenceMap = new ConcurrentHashMap<>();
+    private Map<String, Session> sessionMap = new ConcurrentHashMap<>();
+
+    class Session {
+        long clientOutputSequence = 0;
+        Subject<byte[]> inputBinSubject = PublishSubject.create();
+        Subject<Data.ServerOutput.Builder> outputSubject = PublishSubject.create();
+        Subject<ByteString> onPongSubject = PublishSubject.create();
+        String clientId;
+        Observable<ByteString> intervalPing;
+
+        private final ByteString PING = ByteString.copyFrom(new byte[0]);
+
+        Session(String clientId, long pingInterval, long pongTimeout) {
+            this.clientId = clientId;
+            //interval ping
+            Observable<ByteString> ping = onPongSubject
+//                    .doOnNext(x -> System.out.println("onPong"))
+                    .take(1)
+                    .filter(x -> x.equals(PING))
+                    .mergeWith(Observable.create(emitter -> {
+                        outputSubject.onNext(
+                                Data.ServerOutput
+                                        .newBuilder()
+                                        .setPing(PING)
+                        );
+                        emitter.onComplete();
+                    }))
+                    .timeout(pongTimeout, TimeUnit.SECONDS);
+            intervalPing = Observable.interval(pingInterval, pingInterval, TimeUnit.SECONDS)
+                    .flatMap(x -> ping)
+                    .takeUntil(outputSubject.filter(x -> false));
+        }
+
+        synchronized long nextClientOutputSequence() {
+            return ++clientOutputSequence;
+        }
+
+        void clear() {
+            inputBinSubject.onComplete();
+            outputSubject.onComplete();
+        }
+    }
 
     Server(IConnection conn, ServiceClient client, RaaSOptions options) {
         this.conn = conn;
@@ -43,23 +80,51 @@ public class Server {
         conn.subscribeMsg(serverID)
                 .map(msg -> Data.ClientOutput.parseFrom(msg.getBody()))
                 .doOnNext(data -> {
-                    long sessionID = data.getSessionId();
-                    ObservableEmitter<Data.ClientOutput> emitter = emitterMap.get(sessionID);
-                    if (emitter == null) {
+                    String sessionID = data.getSessionId();
+                    Session session = sessionMap.get(sessionID);
+                    if (session == null) {
                         return;
                     }
-                    emitter.onNext(data);
+                    //check sequence
+                    long shouldBe = session.nextClientOutputSequence();
+                    if (shouldBe != data.getClientOutputSequence()) {
+                        session.inputBinSubject.onError(new Exception("bad client sequence"));
+                        return;
+                    }
+                    //case
+                    Observer<byte[]> inputBinSubject = session.inputBinSubject;
+                    switch (data.getBodyCase()) {
+                        case BIN:
+                            inputBinSubject.onNext(data.getBin().toByteArray());
+                            break;
+                        case PONG:
+                            session.onPongSubject.onNext(data.getPong());
+                            break;
+                        case END:
+                            if (!data.getEnd().isEmpty()) {
+                                inputBinSubject.onNext(data.getEnd().toByteArray());
+                            }
+                            session.clear();
+                            return;
+                        case CANCEL:
+                            inputBinSubject.onError(new Exception(data.getCancel()));
+                            session.clear();
+                            return;
+                        default:
+                            inputBinSubject.onError(new Exception("unrecognized body"));
+                            session.clear();
+                    }
                 })
                 .subscribe();
     }
 
-    public Observable<ServiceInfo> registerService(String serviceName, Service service) {
+    Observable<ServiceInfo> registerService(String serviceName, Service service) {
         Subject<ServiceInfo> serviceInfoSubject = PublishSubject.create();
         ServiceInfo info = new ServiceInfo();
         return conn
                 .subscribeMsg(serviceName, "service")
                 .map(msg -> Data.Request.parseFrom(msg.getBody()))
-                .flatMapCompletable(data -> Completable.fromObservable(onServiceConnected(service, data))
+                .flatMapCompletable(data -> onServiceConnected(service, data)
                         .doOnComplete(() -> {
                             info.completedNum++;
                             serviceInfoSubject.onNext(info);
@@ -80,144 +145,85 @@ public class Server {
                 ;
     }
 
-    private Observable<byte[]> onServiceConnected(Service service, Data.Request request) {
-        long sessionID = request.getSessionId();
+    private final ByteString EMPTY_END = ByteString.copyFrom(new byte[0]);
+
+    private Completable onServiceConnected(Service service, Data.Request request) {
+        //new session
+        String sid = request.getSessionId();
         String clientID = request.getClientId();
-
-        Subject<Data.ServerOutput.Builder> outputSubject = PublishSubject.create();
-        Subject<ByteString> onPongSubject = PublishSubject.create();
-        Subject<byte[]> clientInputSubject = PublishSubject.create();
-
-        return outputSubject
+        Session session = new Session(clientID, options.getPingInterval(), options.getPongTimeout());
+        Subject<Data.ServerOutput.Builder> outputSubject = session.outputSubject;
+        Subject<byte[]> inputBinSubject = session.inputBinSubject;
+        //map session
+        sessionMap.put(sid, session);
+        //listen output
+        outputSubject
                 .observeOn(Schedulers.io())
                 .doOnNext(new Consumer<Data.ServerOutput.Builder>() {
                     private long _sequence = 0;
 
-                    private synchronized long plusSequence() {
+                    private long plusSequence() {
                         return ++_sequence;
                     }
 
                     @Override
                     public void accept(Data.ServerOutput.Builder builder) throws Exception {
                         long sequence = plusSequence();
-                        System.out.println("sessionID:" + sessionID + " s:" + sequence + " tid" + Thread.currentThread().getId());
-                        byte[] data = builder.setSessionId(sessionID)
+                        byte[] data = builder
+                                .setSessionId(sid)
                                 .setServerOutputSequence(sequence)
                                 .build().toByteArray();
                         conn.publish(new MSG(clientID, data));
                     }
                 })
-                .ofType(byte[].class)
-                //call service
-                .mergeWith(
-                        service.onCall(new Context() {
-                            @Override
-                            public byte[] getRequestBin() {
-                                return request.getBin().toByteArray();
-                            }
+                .onErrorResumeNext(Observable.empty())
+                .subscribe();
+        //call service
+        Context ctx = new Context() {
+            @Override
+            public byte[] getRequestBin() {
+                return request.getBin().toByteArray();
+            }
 
-                            @Override
-                            public Observable<byte[]> getInputObservable() {
-                                return clientInputSubject;
-                            }
+            @Override
+            public Observable<byte[]> getInputObservable() {
+                return inputBinSubject;
+            }
 
 
-                            @Override
-                            public Observable<byte[]> callService(String serviceName, byte[] requestBin, Observable<byte[]> output) {
-                                return client.callService(serviceName, requestBin, output);
-                            }
+            @Override
+            public Observable<byte[]> callService(String serviceName, byte[] requestBin, Observable<byte[]> output) {
+                return client.callService(serviceName, requestBin, output);
+            }
 
-                            @Override
-                            public Observable<byte[]> subscribe(String subject) {
-                                return client.subscribe(subject);
-                            }
+            @Override
+            public Observable<byte[]> subscribe(String subject) {
+                return client.subscribe(subject);
+            }
 
-                            @Override
-                            public void publish(String subject, byte[] data) throws IOException {
-                                client.publish(subject, data);
-                            }
+            @Override
+            public void publish(String subject, byte[] data) throws IOException {
+                client.publish(subject, data);
+            }
+        };
+
+        return Completable.fromObservable(service.onCall(ctx)
+                .doOnNext(bin -> outputSubject.onNext(Data.ServerOutput.newBuilder().setBin(ByteString.copyFrom(bin))))
+                .doOnComplete(() -> outputSubject.onNext(Data.ServerOutput.newBuilder().setEnd(EMPTY_END)))
+                .doOnError(err -> outputSubject.onNext(Data.ServerOutput.newBuilder().setErr(err.getMessage() == null ? err.getClass().getSimpleName() : err.getMessage())))
+                .doFinally(() -> {
+                    sessionMap.remove(sid);
+                    session.clear();
+                })
+        )
+                .mergeWith(Completable.create(emitter -> {
+                            //send server id
+                            outputSubject.onNext(Data.ServerOutput.newBuilder().setServerId(serverID));
+                            emitter.onComplete();
                         })
-                                .doOnNext(bin -> outputSubject.onNext(Data.ServerOutput.newBuilder().setBin(ByteString.copyFrom(bin))))
-                                .doOnComplete(() -> outputSubject.onNext(Data.ServerOutput.newBuilder().setEnd(null)))
-                                .doOnError(err -> outputSubject.onNext(Data.ServerOutput.newBuilder().setErr(err.getMessage() == null ? err.getClass().getSimpleName() : err.getMessage())))
-                                .doFinally(() -> {
-                                    outputSubject.onComplete();
-                                    onPongSubject.onComplete();
-                                    clientInputSubject.onComplete();
-                                    clientOutputSequenceMap.remove(sessionID);
-                                    emitterMap.remove(sessionID);
-                                })
-                                .onErrorResumeNext(Observable.empty())
                 )
-                //listen input
-                .mergeWith(
-                        Observable.<Data.ClientOutput>create(emitter -> emitterMap.put(sessionID, emitter))
-                                .takeUntil(data -> data.getBodyCase() == END || data.getBodyCase() == CANCEL)
-                                //get input data
-                                .flatMap(data -> observeInputData(data, clientInputSubject, onPongSubject))
-                )
-                //interval ping
-                .mergeWith(intervalPing(clientID, sessionID, onPongSubject, outputSubject))
-                //send server id
-                .mergeWith(Observable.create(emitter -> {
-                    outputSubject.onNext(Data.ServerOutput.newBuilder().setServerId(serverID));
-                    emitter.onComplete();
-                }))
+                .mergeWith(Completable.fromObservable(session.intervalPing))
                 ;
-    }
-
-    private Observable<byte[]> observeInputData(Data.ClientOutput data, Subject<byte[]> clientInputSubject, Observer<ByteString> onPongSubject) {
-        return Observable.create(emitter -> {
-            long sid = data.getSessionId();
-            //check sequence
-            long shouldbe = clientOutputSequenceMap.get(sid) + 1;
-            if (shouldbe != data.getClientOutputSequence()) {
-                emitter.tryOnError(new Exception("bad client sequence"));
-                return;
-            }
-            clientOutputSequenceMap.put(sid, shouldbe);
-            switch (data.getBodyCase()) {
-                case BIN:
-                    clientInputSubject.onNext(data.getBin().toByteArray());
-                    break;
-                case PONG:
-                    onPongSubject.onNext(data.getPong());
-                    break;
-                case END:
-                    if (!data.getEnd().isEmpty()) {
-                        clientInputSubject.onNext(data.getEnd().toByteArray());
-                        clientInputSubject.onComplete();
-                    }
-                    break;
-                case CANCEL:
-                    emitter.tryOnError(new Exception(data.getCancel()));
-                    return;
-                default:
-                    emitter.tryOnError(new Exception("unrecognized body"));
-                    return;
-            }
-            emitter.onComplete();
-        });
-    }
-
-    private final static ByteString PING = ByteString.copyFrom(new byte[0]);
-
-    private Observable<byte[]> intervalPing(String clientID, long sessionID, Observable<ByteString> onPongSubject, Subject<Data.ServerOutput.Builder> outputSubject) {
-        Observable<ByteString> ping = onPongSubject
-                .doOnNext(x -> System.out.println("onPong"))
-                .take(1)
-                .filter(x -> x.equals(PING))
-                .mergeWith(Observable.create(emitter -> {
-                    outputSubject.onNext(Data.ServerOutput.newBuilder()
-                            .setPing(PING)
-                    );
-                    emitter.onComplete();
-                }))
-                .timeout(options.getPongTimeout(), TimeUnit.SECONDS);
-        return Observable.interval(options.getPingInterval(), TimeUnit.SECONDS)
-                .flatMap(x -> ping)
-                .takeUntil(onPongSubject.filter(x -> false))
-                .ofType(byte[].class);
     }
 
 }

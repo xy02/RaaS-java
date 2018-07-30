@@ -9,7 +9,7 @@ package raas;
 
 message Request {
     //session id
-    int64 session_id = 1;
+    string session_id = 1;
     //client id
     string client_id = 2;
     //raw binary data
@@ -18,7 +18,7 @@ message Request {
 
 message ServerOutput {
     //session id
-    int64 session_id = 1;
+    string session_id = 1;
     //sequence number start from 1
     int64 server_output_sequence = 2;
     //main body
@@ -38,7 +38,7 @@ message ServerOutput {
 
 message ClientOutput {
     //session id
-    int64 session_id = 1;
+    string session_id = 1;
     //sequence number start from 1
     int64 client_output_sequence = 2;
     //main body
