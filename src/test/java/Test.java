@@ -25,7 +25,7 @@ public class Test {
             node.registerService("test.s1",
                     ctx -> {
                         System.out.println("tid" + Thread.currentThread().getId());
-                        return Observable.interval(0, 1, TimeUnit.MILLISECONDS)
+                        return Observable.interval(0, 5, TimeUnit.MICROSECONDS)
 //                            .doOnNext(x -> System.out.println(new String(x)))
                                 .map(x -> new String(ctx.getRequestBin()) + x)
                                 .map(String::getBytes);
@@ -53,6 +53,24 @@ public class Test {
                     }
             )
                     .doOnNext(x -> System.out.printf("s3 onCall: %d, onError: %d, onComplete: %d\n", x.calledNum, x.errorNum, x.completedNum))
+                    .subscribe();
+
+            node.registerService("test.s4",
+                    ctx -> {
+                        System.out.println("tid" + Thread.currentThread().getId());
+                        return ctx.getInputObservable();
+                    }
+            )
+                    .doOnNext(x -> System.out.printf("s4 onCall: %d, onError: %d, onComplete: %d\n", x.calledNum, x.errorNum, x.completedNum))
+                    .subscribe();
+
+            node.registerService("test.s5",
+                    ctx -> {
+//                        System.out.println("tid" + Thread.currentThread().getId());
+                        return Observable.just(ctx.getRequestBin());
+                    }
+            )
+//                    .doOnNext(x -> System.out.printf("s5 onCall: %d, onError: %d, onComplete: %d\n", x.calledNum, x.errorNum, x.completedNum))
                     .subscribe();
 
             //forever
