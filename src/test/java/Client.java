@@ -17,26 +17,29 @@ public class Client {
 
     public static void main(String[] args) {
         try {
+            IConnection serverConn = new Connection();
             //call service
             RaaSNode node = new NatsNode();
             byte[] buf = "hello".getBytes();
-            Observable.interval(0, 100, TimeUnit.MICROSECONDS)
-                    .flatMap(x->node.callService("test.s5", buf, Observable.empty())
-                            .doOnComplete(() -> read++)
+            Observable.interval(0, 30, TimeUnit.MICROSECONDS)
+                    .flatMap(x->
+                            node.callService("test.s5", buf, Observable.empty())
+                                    .doOnComplete(() -> read++)
                     )
-                    .doOnComplete(() -> read++)
+//                    .flatMap(x->Observable.create(emitter -> {
+//                        byte[] req = Data.Request.newBuilder()
+//                                .setSessionId("test")
+//                                .setClientId("tt")
+//                                .setBin(ByteString.copyFrom(buf))
+//                                .build().toByteArray();
+//                        serverConn.publish(new MSG("test.s5", req));
+//                        emitter.onComplete();
+//                    }))
+//                    .doOnNext(X -> read++)
                     .subscribe();
 
-//            IConnection serverConn = new Connection();
-//            byte[] req = Data.Request.newBuilder()
-//                    .setSessionId("test")
-//                    .setClientId("tt")
-//                    .setBin(ByteString.copyFrom(buf))
-//                    .build().toByteArray();
-//            serverConn.publish(new MSG("test.s5", req));
-
 //            Disposable d2 = node.callService("test.s4", buf,
-//                    Observable.interval(2,TimeUnit.MICROSECONDS)
+//                    Observable.interval(100,TimeUnit.MICROSECONDS)
 //                    .map(x->buf)
 //            )
 //                    .doOnNext(x -> read++)

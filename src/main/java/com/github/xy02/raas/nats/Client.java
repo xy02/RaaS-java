@@ -8,6 +8,7 @@ import com.google.protobuf.ByteString;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.ReplaySubject;
 import io.reactivex.subjects.Subject;
@@ -28,8 +29,8 @@ class Client {
     class Session {
         String sessionID;
         String serverID;
-         long clientOutputSequence = 1;
-         long serverOutputSequence = 1;
+        long clientOutputSequence = 1;
+        long serverOutputSequence = 1;
         Subject<byte[]> inputBinSubject = PublishSubject.create();
         //        Subject<Data.ClientOutput.Builder> outputSubject = PublishSubject.create();
         Subject<String> serverIdSubject = ReplaySubject.create();
@@ -61,6 +62,7 @@ class Client {
 
         void handleServerOutput(Data.ServerOutput data) throws Exception {
             //case
+//            System.out.println(data.getBodyCase());
             switch (data.getBodyCase()) {
                 case SERVER_ID:
                     String serverId = data.getServerId();
@@ -103,8 +105,9 @@ class Client {
         }
 
         void clear() {
-//            inputBinSubject.onComplete();
-//            serverIdSubject.onComplete();
+            inputBinSubject.onComplete();
+            serverIdSubject.onComplete();
+            serverOutputTempMap.clear();
 //            inputTimeoutSubject.onComplete();
         }
     }
@@ -118,10 +121,16 @@ class Client {
                 .map(msg -> Data.ServerOutput.parseFrom(msg.getBody()))
                 .doOnNext(data -> {
                     String sessionID = data.getSessionId();
-                    Session session = sessionMap.get(sessionID);
-                    if (session == null) {
-                        return;
+                    ObservableEmitter<byte[]> emitter = requestEmitters.get(sessionID);
+                    if (emitter != null) {
+//                        emitter.onNext(msg);
+                        emitter.onComplete();
                     }
+//                    String sessionID = data.getSessionId();
+//                    Session session = sessionMap.get(sessionID);
+//                    if (session == null) {
+//                        return;
+//                    }
 //                    //reset timeout
 //                    session.inputTimeoutSubject.onNext(1);
 //                    //check sequence
@@ -130,40 +139,30 @@ class Client {
 //                        session.serverOutputTempMap.put(ss, data);
 //                        return;
 //                    }
-                    session.handleServerOutput(data);
-//                    session.inputBinSubject.onComplete();
-//                    System.out.println(session.sessionID);
-//                    sessionMap.remove(session.sessionID);
+//                    session.handleServerOutput(data);
                 })
                 .subscribe(x -> {
                 }, Throwable::printStackTrace);
     }
 
 
-    Observable<byte[]> callService(String serviceName, byte[] requestBin, Observable<byte[]> output) {
-        //new session
-        String sid = Utils.randomID();
-        Session session = new Session(sid);
-//        Subject<byte[]> inputBinSubject = session.inputBinSubject;
-//        Subject<String> serverIdSubject = session.serverIdSubject;
-//        //map session
-        sessionMap.put(sid, session);
-        //send output data
-//        Disposable outDis = session.serverIdSubject
-//                .flatMap(serverId -> output
-//                        .doOnNext(data -> session.outputClientData(Data.ClientOutput.newBuilder().setBin(ByteString.copyFrom(data))))
-//                )
-//                .subscribe();
+    //test
+    private Map<String, ObservableEmitter<byte[]>> requestEmitters = new ConcurrentHashMap<>();
+    private long requestID;
 
-        return session.inputBinSubject
-                .doFinally(() -> {
-                    sessionMap.remove(sid);
-//                    outDis.dispose();
-//                    session.clear();
-                })
-                //send request data
-                .mergeWith(
-                        Observable.create(emitter -> {
+    private synchronized long plusRequestID() {
+        return ++requestID;
+    }
+    Observable<byte[]> callService(String serviceName, byte[] requestBin, Observable<byte[]> output) {
+//        String sid = Utils.randomID(); //sessionID
+        long id = plusRequestID();
+        String sid = clientID + id;
+        return Observable.<byte[]>create(emitter -> {
+            requestEmitters.put(sid, emitter);
+        })
+
+//                .take(1)
+                .mergeWith(Observable.create(emitter -> {
                             byte[] req = Data.Request.newBuilder()
                                     .setSessionId(sid)
                                     .setClientId(clientID)
@@ -173,6 +172,43 @@ class Client {
                             emitter.onComplete();
                         })
                 )
+//                .singleOrError()
+//                .timeout(timeout, timeUnit)
+                .doFinally(() -> requestEmitters.remove(sid))
+                ;
+    }
+
+    Observable<byte[]> callService2(String serviceName, byte[] requestBin, Observable<byte[]> output) {
+        //new session
+        String sid = Utils.randomID();
+        Session session = new Session(sid);
+//        //map session
+        sessionMap.put(sid, session);
+        //send output data
+        Disposable outDis = session.serverIdSubject
+                .flatMap(serverId -> output
+                        .doOnNext(data -> session.outputClientData(Data.ClientOutput.newBuilder().setBin(ByteString.copyFrom(data))))
+                )
+                .subscribe();
+
+        return session.inputBinSubject
+                .doFinally(() -> {
+                    sessionMap.remove(sid);
+                    outDis.dispose();
+                    session.clear();
+                })
+                //send request data
+                .mergeWith(
+                        Observable.<byte[]>create(emitter -> {
+                            byte[] req = Data.Request.newBuilder()
+                                    .setSessionId(sid)
+                                    .setClientId(clientID)
+                                    .setBin(ByteString.copyFrom(requestBin))
+                                    .build().toByteArray();
+                            conn.publish(new MSG(serviceName, req));
+                            emitter.onComplete();
+                        }).subscribeOn(Schedulers.io())
+                )
 //                .mergeWith(
 //                        Observable.create(emitter -> {
 //                            session.inputBinSubject.onComplete();
@@ -180,26 +216,6 @@ class Client {
 //                        })
 //                )
                 ;
-        //return
-//        return inputBinSubject
-//                .doFinally(() -> {
-////                    outDis.dispose();
-//                    sessionMap.remove(sid);
-//                    session.clear();
-//                })
-//                //send request data
-//                .mergeWith(
-//                        Observable.create(emitter -> {
-//                            byte[] req = Data.Request.newBuilder()
-//                                    .setSessionId(sid)
-//                                    .setClientId(clientID)
-//                                    .setBin(ByteString.copyFrom(requestBin))
-//                                    .build().toByteArray();
-//                            conn.publish(new MSG(serviceName, req));
-//                            emitter.onComplete();
-//                        })
-//                )
-//                ;
     }
 
 }

@@ -21,48 +21,48 @@ public class Test {
 //                    .subscribe();
 
             RaaSNode node = new NatsNode();
-            //registerService service
-            node.registerService("test.s1",
-                    ctx -> {
-                        System.out.println("tid" + Thread.currentThread().getId());
-                        return Observable.interval(0, 5, TimeUnit.MICROSECONDS)
-//                            .doOnNext(x -> System.out.println(new String(x)))
-                                .map(x -> new String(ctx.getRequestBin()) + x)
-                                .map(String::getBytes);
-                    }
-            )
-                    .doOnNext(x -> System.out.printf("s1 onCall: %d, onError: %d, onComplete: %d\n", x.calledNum, x.errorNum, x.completedNum))
-                    .subscribe();
-
-            node.registerService("test.s2",
-                    ctx -> {
-                        System.out.println("tid" + Thread.currentThread().getId());
-                        return Observable.error(new Exception("abc"));
-                    }
-            )
-                    .doOnNext(x -> System.out.printf("s2 onCall: %d, onError: %d, onComplete: %d\n", x.calledNum, x.errorNum, x.completedNum))
-                    .subscribe();
-
-            node.registerService("test.s3",
-                    ctx -> {
-                        System.out.println("tid" + Thread.currentThread().getId());
-                        return Observable.interval(0, 1, TimeUnit.SECONDS)
-                                .takeUntil(Observable.timer(5, TimeUnit.SECONDS))
-                                .map(x -> new String(ctx.getRequestBin()) + x)
-                                .map(String::getBytes);
-                    }
-            )
-                    .doOnNext(x -> System.out.printf("s3 onCall: %d, onError: %d, onComplete: %d\n", x.calledNum, x.errorNum, x.completedNum))
-                    .subscribe();
-
-            node.registerService("test.s4",
-                    ctx -> {
-                        System.out.println("tid" + Thread.currentThread().getId());
-                        return ctx.getInputObservable();
-                    }
-            )
-                    .doOnNext(x -> System.out.printf("s4 onCall: %d, onError: %d, onComplete: %d\n", x.calledNum, x.errorNum, x.completedNum))
-                    .subscribe();
+//            //registerService service
+//            node.registerService("test.s1",
+//                    ctx -> {
+//                        System.out.println("tid" + Thread.currentThread().getId());
+//                        return Observable.interval(0, 5, TimeUnit.MICROSECONDS)
+////                            .doOnNext(x -> System.out.println(new String(x)))
+//                                .map(x -> new String(ctx.getRequestBin()) + x)
+//                                .map(String::getBytes);
+//                    }
+//            )
+//                    .doOnNext(x -> System.out.printf("s1 onCall: %d, onError: %d, onComplete: %d\n", x.calledNum, x.errorNum, x.completedNum))
+//                    .subscribe();
+//
+//            node.registerService("test.s2",
+//                    ctx -> {
+//                        System.out.println("tid" + Thread.currentThread().getId());
+//                        return Observable.error(new Exception("abc"));
+//                    }
+//            )
+//                    .doOnNext(x -> System.out.printf("s2 onCall: %d, onError: %d, onComplete: %d\n", x.calledNum, x.errorNum, x.completedNum))
+//                    .subscribe();
+//
+//            node.registerService("test.s3",
+//                    ctx -> {
+//                        System.out.println("tid" + Thread.currentThread().getId());
+//                        return Observable.interval(0, 1, TimeUnit.SECONDS)
+//                                .takeUntil(Observable.timer(5, TimeUnit.SECONDS))
+//                                .map(x -> new String(ctx.getRequestBin()) + x)
+//                                .map(String::getBytes);
+//                    }
+//            )
+//                    .doOnNext(x -> System.out.printf("s3 onCall: %d, onError: %d, onComplete: %d\n", x.calledNum, x.errorNum, x.completedNum))
+//                    .subscribe();
+//
+//            node.registerService("test.s4",
+//                    ctx -> {
+//                        System.out.println("tid" + Thread.currentThread().getId());
+//                        return ctx.getInputObservable();
+//                    }
+//            )
+//                    .doOnNext(x -> System.out.printf("s4 onCall: %d, onError: %d, onComplete: %d\n", x.calledNum, x.errorNum, x.completedNum))
+//                    .subscribe();
 
             node.registerService("test.s5",
                     ctx -> {

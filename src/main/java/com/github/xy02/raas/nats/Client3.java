@@ -105,12 +105,14 @@ class Client3 {
                     emitter.onNext(data.getBin().toByteArray());
                     break;
                 case END:
+                    onPing.onComplete();
                     ByteString buf = data.getEnd();
                     if(!buf.isEmpty())
                         emitter.onNext(buf.toByteArray());
                     emitter.onComplete();
                     break;
                 case ERR:
+                    onPing.onComplete();
                     String err = data.getErr();
                     if (err != null && !err.isEmpty())
                         throw new Exception(err);

@@ -90,6 +90,7 @@ class Server {
         void clear() {
             inputBinSubject.onComplete();
             onPongSubject.onComplete();
+            clientOutputTempMap.clear();
         }
 
         private synchronized long nextClientOutputSequence() {
@@ -148,7 +149,7 @@ class Server {
 
         @Override
         public Observable<byte[]> getInputObservable() {
-            return null;
+            return inputBinSubject;
         }
 
 
